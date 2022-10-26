@@ -35,7 +35,7 @@ pub mod lexer {
             // Quit if no more chars on source
             if self.position >= self.source.chars().count().try_into().unwrap() {
                 // source consumed
-                return("TOKEN".to_string(), "EOF".to_string());
+                return("EOF".to_string(), "EOF".to_string());
             }
     
             let mut current_char = self.get_current_char().unwrap();
@@ -81,8 +81,33 @@ pub mod lexer {
                 }
                 return ("STRING".to_string(), s)
             }
+
+            // +
+            if current_char == '+' {
+                self.advance_position();
+                return ("PLUS".to_string(), "+".to_string())
+            }
             // No token found
-            return("TOKEN".to_string(), "EOF".to_string());
+            return("ERROR".to_string(), "ERROR".to_string());
+        }
+
+        pub fn print_all_tokens(&mut self) {
+            /**
+             * proc getAllTokens*(lxr: var Lexer) =
+             * ## Read all the tokens from source stored in class Lexer
+             * while true:
+             * var token = lxr.getNextToken()
+             * echo token
+             * if token.tokenType == "EOF" or token.tokenType == "ERROR":
+             *   break
+             */
+            loop {
+                let token = self.get_next_token();
+                println!("{} {} at position: {}",token.0, token.1, self.position);
+                if token.1 == "EOF" || token.1 == "ERROR" {
+                    break;
+                }
+            }
         }
     
     }

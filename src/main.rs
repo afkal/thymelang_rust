@@ -4,6 +4,7 @@
  * Book with Rust: https://createlang.rs/
  */
 //use compiler_poc::lexer; /* start poc with lexer functionality */
+use std::env;
 mod lexer;
 mod parser;
 pub use crate::lexer::lexer as lxr;
@@ -25,9 +26,13 @@ fn main() {
         if input == "q\n" {
             break; // Press 'q' to quit'
         } else {
-            //let tokenizer = lxr::Tokenizer::new("15+3 a 5");
+
+            // Testing tokenizer
+            let mut tokenizer = lxr::Tokenizer::new(&input); // instantiate new lexer from source
+            tokenizer.print_all_tokens();
+
+            // Parsing 
             let mut parser = psr::Parser::new(&input);
-            //let mut parser = psr::Parser::new("15");
             let result = parser.parse();
             println!("{:?}",result);
             /*
@@ -47,6 +52,30 @@ fn main() {
             let result = interpreter.interpret(); // interpreter output
             println!("{}", result);
             */
+
+
+            /*
+            Nim reference implementation:
+            # Lexer
+            echo "Lexer output:"
+            var lexer = lexer.new(source) # instantiate new lexer from source
+            #var token = lxr.getNextToken()
+            lexer.getAllTokens()
+            #echo token
+      
+            # Parser
+            echo "Parser output:"
+            var parser = parser.new(source)
+            var ast = parser.parse()
+            echo ast
+      
+            # Interpreter
+            echo "Interpreter output:"
+            var interpreter = interpreter.new(source)
+            var result = interpreter.interpret()
+            echo result
+            */
+
         }
     }
 }
