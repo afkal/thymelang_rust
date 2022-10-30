@@ -28,6 +28,11 @@ fn main() {
         } else {
 
             // Testing tokenizer
+            /* Old implementation works against "lexer_old.rs"
+            let mut tokenizer = lxr::Tokenizer::new(&input); // instantiate new lexer from source
+            tokenizer.print_all_tokens();
+            */
+
             let mut tokenizer = lxr::Tokenizer::new(&input); // instantiate new lexer from source
             tokenizer.print_all_tokens();
 
@@ -35,23 +40,6 @@ fn main() {
             let mut parser = psr::Parser::new(&input);
             let result = parser.parse();
             println!("{:?}",result);
-            /*
-            let result = lexer::tokenize(&mut input);
-            for (name, value) in result {
-                print!("({}:{})", name, value);
-            }
-            println!("");
-            */
-            // To be refaktored to object oriented step by step mode:
-            /*
-            let lexer = Lexer::new(input); // returns new lexer object
-            //tokens = lexer::make_tokens() // optionally create a list of tokens (not needed in step-by-step mode)
-            let parser = Parser::new(lexer); // returns new parser object
-    
-            let mut interpreter = Interpreter::new(parser); // returns new interpreter object
-            let result = interpreter.interpret(); // interpreter output
-            println!("{}", result);
-            */
 
 
             /*

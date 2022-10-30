@@ -1,31 +1,50 @@
 pub mod parser {
 
     use crate::lexer::lexer as lxr;
+    use crate::lxr::Token;
+
+    #[derive(Debug)] // Enable formatted printing "{:?}"
+    pub struct Node {
+        ntype: String,
+        nvalue: String,
+        children: Vec<Node>
+    }
+
+    impl Node {
+        pub fn new_without_children(ntype: &str, nvalue: String) -> Self {
+            Self {
+                ntype: String::from(ntype),
+                //nvalue: String::from(nvalue),
+                nvalue: nvalue,
+                children: Vec::new()
+            }
+        }
+    }
 
     pub struct Parser {
         /* Parse string into an AST */
-        next_token: (String, String),
+        next_token: Token,
         tokenizer: lxr::Tokenizer
     }
     impl Parser {
     
         pub fn new(source: &str) -> Parser {
             Parser {
-                next_token: ("".to_string(),"".to_string()), // empty token in the start
+                // Initialize with empty token in the start
+                next_token: Token {
+                    ttype: String::from(""),
+                    tvalue: String::from("")
+                },
                 tokenizer: lxr::Tokenizer::new(source)
             }
         }
-    
-        pub fn _get_next_token(&self) -> (String, String) {
-            return self.next_token.clone();
-        }
-    
-        pub fn parse(&mut self) -> (&str, String) {
+        
+        pub fn parse(&mut self) -> Node {
     
             // Lookahead is a next token used for predictive parsing (LL1 parser)
             self.next_token = self.tokenizer.get_next_token();
             
-            println!("Parsing token: ({}, {})", self.next_token.0, self.next_token.1);
+            println!("Parsing token: ({}, {})", self.next_token.ttype, self.next_token.tvalue);
     
             // Parse recursively
             return self.program(); // return the output of the runned program
@@ -34,10 +53,11 @@ pub mod parser {
         /**
          * Consume current token and advance to next token
          */
-        fn eat_token(&mut self, token_type : &str)-> (String, String) {
+        fn eat_token(&mut self, token_type : &str)-> Token {
 
-            let current_token = self.next_token.clone(); // Clone next token to current local token
-            if self.next_token == ("".to_string(), "".to_string()) || self.next_token.0 != token_type {
+            //let current_token = self.next_token.clone(); // Clone next token to current local token
+            let current_token = self.next_token.clone();
+            if self.next_token.ttype == "".to_string() || self.next_token.ttype != token_type {
                 panic!("Expected token type: {}",token_type)
             }
 
@@ -52,7 +72,7 @@ pub mod parser {
          *   : Expression
          *   ;
          */
-        fn program(&mut self) -> (&str, String) {
+        fn program(&mut self) -> Node {
             return self.expression();
         }
 
@@ -61,9 +81,9 @@ pub mod parser {
          *   : Literal
          *   ;
          */
-        fn expression(&mut self) -> (&str, String) {
+        fn expression(&mut self) -> Node {
             return self.literal();
-            let left = self.literal();
+            //let left = self.literal();
             
         }
 
@@ -80,11 +100,11 @@ pub mod parser {
          *   | StringLiteral
          *   ;
          */
-        fn literal(&mut self) -> (&str, String) {
-            if self.next_token.0 == "NUMBER" {
+        fn literal(&mut self) -> Node {
+            if self.next_token.ttype == "NUMBER" {
                 return self.numeric_literal();
             }
-            if self.next_token.0 == "STRING" {
+            if self.next_token.ttype == "STRING" {
                 return self.string_literal();
             }
             panic!("Unexpected literal!")
@@ -94,18 +114,24 @@ pub mod parser {
          * NumericLiteral
          *   : NUMBER
          */
-        fn numeric_literal(&mut self) -> (&str, String) {
+        fn numeric_literal(&mut self) -> Node {
             let token = self.eat_token("NUMBER");
-            return ("NumericLiteral", token.1); // String to int cast
+            /*
+            return Node {
+                ntype: String::from("NumericLiteral"),
+                nvalue: token.tvalue
+            }
+            */
+            Node::new_without_children("NumericLiteral", token.tvalue)
         }
 
         /**
          * StringLiteral
          *   : STRING
          */
-        fn string_literal(&mut self) -> (&str, String) {
+        fn string_literal(&mut self) -> Node {
             let token = self.eat_token("STRING");
-            return ("StringLiteral", token.1); // String to int cast
+            Node::new_without_children("StringLiteral", token.tvalue)
         }
     }
 }
