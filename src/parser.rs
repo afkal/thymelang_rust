@@ -3,7 +3,7 @@ pub mod parser {
     use crate::lexer::lexer as lxr;
     use crate::lxr::Token;
 
-    #[derive(Debug)] // Enable formatted printing "{:?}"
+    #[derive(PartialEq, Debug)] // Enable formatted printing "{:?}"
     pub struct Node {
         ntype: String,
         nvalue: String,
@@ -11,11 +11,10 @@ pub mod parser {
     }
 
     impl Node {
-        pub fn new_without_children(ntype: &str, nvalue: String) -> Self {
+        pub fn new_without_children(ntype: &str, nvalue: &str) -> Self {
             Self {
                 ntype: String::from(ntype),
-                //nvalue: String::from(nvalue),
-                nvalue: nvalue,
+                nvalue: String::from(nvalue),
                 children: Vec::new()
             }
         }
@@ -122,7 +121,7 @@ pub mod parser {
                 nvalue: token.tvalue
             }
             */
-            Node::new_without_children("NumericLiteral", token.tvalue)
+            Node::new_without_children("NumericLiteral", &token.tvalue)
         }
 
         /**
@@ -131,7 +130,31 @@ pub mod parser {
          */
         fn string_literal(&mut self) -> Node {
             let token = self.eat_token("STRING");
-            Node::new_without_children("StringLiteral", token.tvalue)
+            Node::new_without_children("StringLiteral", &token.tvalue)
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use crate::parser::parser as prs;
+    use crate::parser::parser::Node;
+
+    #[test]
+    fn test_parse_single_integer() {
+        let mut parser = prs::Parser::new("153");
+        let result = parser.parse();
+        let expected = Node::new_without_children("NumericLiteral", "153");
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_parse_single_string() {
+        let mut parser = prs::Parser::new("\"Testing\"");
+        let result = parser.parse();
+        let expected = Node::new_without_children("StringLiteral", "\"Testing\"");
+        assert_eq!(expected, result);
+    }
+
 }

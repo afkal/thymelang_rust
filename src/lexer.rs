@@ -1,5 +1,31 @@
 pub mod lexer {
 
+    use regex::Regex;
+
+    const REGEX_ARRAY: [(&str,&str);16] = [
+        (r"\n", "EOL"), // Newline
+        // Numbers
+        (r"^([0-9]*[.])?[0-9]+", "NUMBER"), // WILL BE FLOAT IN FUTURE?
+        (r"^\d+", "NUMBER"), // INT NEEDS TO BE AFTER FLOAT OR FLOAT WILL NOT KICK IN
+        // Operators
+        (r"^\(", "LPAREN"), // LEFT PARENTHESIS
+        (r"^\)", "RPAREN"), // RIGHT PARENTHESIS
+        (r"^\*", "MUL"), // MULTIPLY
+        (r"^/", "DIV"), // DIVIDE
+        (r"^\+", "PLUS"), // PLUS
+        (r"^-", "MINUS"), // MINUS
+        (r"^==", "EQUAL"), // EQUALS
+        (r"^=", "ASSIGN"),  // ASSIGN
+        (r"^;", "SEMICOLON"), // SEMICOLON
+        (r"^\{", "LCURLY"), // LEFT CURLY BRACKET
+        (r"^\}", "RCURLY"), // RIGHT CURLY BRACKET
+        // String
+        (r####"^"(.*?)""####, "STRING"), // STRING
+        //(re(stringFilter), "STRING"),
+        // Identifier
+        (r"^[_a-zA-Z][a-zA-Z0-9_]+", "IDENTIFIER")
+    ];
+
     #[derive(PartialEq, Debug, Clone)]
     pub struct Token {
         pub ttype: String,
@@ -14,6 +40,7 @@ pub mod lexer {
             }
         }
     }
+
     pub struct Tokenizer {
         source: String,
         position: usize
@@ -43,8 +70,37 @@ pub mod lexer {
             self.position += 1;
         }
     
-        /* Get next token */
+
         pub fn get_next_token(&mut self) -> Token {
+
+            // Quit if no more chars on source
+            if self.position >= self.source.chars().count().try_into().unwrap() {
+                // source consumed
+                return Token::new("EOF", "EOF");
+            }
+
+            // Target is the remaining source to evaluate
+            let target = &self.source[self.position..self.source.len()];
+            println!("Target: {}",target);
+            // Loop regex array to find matching token
+            for item in REGEX_ARRAY {
+                //println!("Evaluating regexp: {}", item.0);
+                let re = Regex::new(item.0).unwrap();
+                if re.is_match(&target) {
+                    let cap = re.find(&target).unwrap();
+                    println!("Match found with regexp: {}",item.0);
+                    println!("Match: {:#?}",cap);
+                    self.position += cap.end();
+                    return Token::new(item.1, cap.as_str());
+                }
+            }
+            // No Match found - return error
+            return Token::new("ERROR", "ERROR");
+        }
+
+
+        /* Get next token */
+        pub fn get_next_token_old(&mut self) -> Token {
 
             // Quit if no more chars on source
             if self.position >= self.source.chars().count().try_into().unwrap() {
@@ -93,25 +149,16 @@ pub mod lexer {
                     }
                     s.push(current_char); // build string char by char
                 }
-                return Token {
-                    ttype: String::from("STRING"),
-                    tvalue: s
-                }
+                return Token::new("STRING", &s);
             }
 
             // +
             if current_char == '+' {
                 self.advance_position();
-                return Token {
-                    ttype: String::from("PLUS"),
-                    tvalue: String::from("+"),
-                }
+                return Token::new("PLUS", "+");
             }
             // No token found
-            return Token {
-                ttype: String::from("ERROR"),
-                tvalue: String::from("ERROR"),
-            }
+            return Token::new("ERROR", "ERROR");
         }
 
         pub fn print_all_tokens(&mut self) {
@@ -169,15 +216,14 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
     fn test_tokenizer_invalid_float() {
         let mut tokenizer = lxr::Tokenizer::new("153.234.23432");
         let result = tokenizer.get_next_token();
         let nexpected = Token {
             ttype: String::from("NUMBER"),
-            tvalue: String::from("153.234.23432")
+            tvalue: String::from("153.234")
         };
-        assert_ne!(nexpected, result);
+        assert_eq!(nexpected, result);
     }
 
     #[test]
@@ -197,20 +243,30 @@ mod tests {
         let result = tokenizer.get_next_token();
         let expected = Token {
             ttype: String::from("STRING"),
-            tvalue: String::from("jiihaa")
+            tvalue: String::from("\"jiihaa\"")
         };
         assert_eq!(expected, result);
     }
 
     #[test]
-    #[should_panic]
     fn test_tokenizer_incomplete_string() {
         let mut tokenizer = lxr::Tokenizer::new("\"jiihaa");
         let result = tokenizer.get_next_token();
         let nexpected = Token {
-            ttype: String::from("STRING"),
-            tvalue: String::from("jiihaa")
+            ttype: String::from("ERROR"),
+            tvalue: String::from("ERROR")
         };
-        assert_ne!(nexpected, result);
+        assert_eq!(nexpected, result);
+    }
+
+    #[test]
+    fn test_tokenizer_identifier() {
+        let mut tokenizer = lxr::Tokenizer::new("Jii_haa16");
+        let result = tokenizer.get_next_token();
+        let nexpected = Token {
+            ttype: String::from("IDENTIFIER"),
+            tvalue: String::from("Jii_haa16")
+        };
+        assert_eq!(nexpected, result);
     }
 }

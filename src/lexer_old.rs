@@ -93,25 +93,16 @@ pub mod lexer {
                     }
                     s.push(current_char); // build string char by char
                 }
-                return Token {
-                    ttype: String::from("STRING"),
-                    tvalue: s
-                }
+                return Token::new("STRING", &s);
             }
 
             // +
             if current_char == '+' {
                 self.advance_position();
-                return Token {
-                    ttype: String::from("PLUS"),
-                    tvalue: String::from("+"),
-                }
+                return Token::new("PLUS", "+");
             }
             // No token found
-            return Token {
-                ttype: String::from("ERROR"),
-                tvalue: String::from("ERROR"),
-            }
+            return Token::new("ERROR", "ERROR");
         }
 
         pub fn print_all_tokens(&mut self) {
