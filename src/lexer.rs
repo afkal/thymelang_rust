@@ -81,15 +81,15 @@ pub mod lexer {
 
             // Target is the remaining source to evaluate
             let target = &self.source[self.position..self.source.len()];
-            println!("Target: {}",target);
+            //println!("Target: {}",target);
             // Loop regex array to find matching token
             for item in REGEX_ARRAY {
                 //println!("Evaluating regexp: {}", item.0);
                 let re = Regex::new(item.0).unwrap();
                 if re.is_match(&target) {
                     let cap = re.find(&target).unwrap();
-                    println!("Match found with regexp: {}",item.0);
-                    println!("Match: {:#?}",cap);
+                    //println!("Match found with regexp: {}",item.0);
+                    //println!("Match: {:#?}",cap);
                     self.position += cap.end();
                     return Token::new(item.1, cap.as_str());
                 }
@@ -99,7 +99,7 @@ pub mod lexer {
         }
 
 
-        /* Get next token */
+        /* Get next token - old way without regexp */
         pub fn get_next_token_old(&mut self) -> Token {
 
             // Quit if no more chars on source

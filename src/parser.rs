@@ -37,6 +37,10 @@ pub mod parser {
                 tokenizer: lxr::Tokenizer::new(source)
             }
         }
+
+        pub fn get_next_token(&mut self) -> Token {
+            self.next_token.clone()
+        }
         
         pub fn parse(&mut self) -> Node {
     
@@ -52,7 +56,7 @@ pub mod parser {
         /**
          * Consume current token and advance to next token
          */
-        fn eat_token(&mut self, token_type : &str)-> Token {
+        fn eat_token(&mut self, token_type : &str) {
 
             //let current_token = self.next_token.clone(); // Clone next token to current local token
             let current_token = self.next_token.clone();
@@ -61,7 +65,7 @@ pub mod parser {
             }
 
             self.next_token = self.tokenizer.get_next_token(); // Advance lookahed to next token
-            current_token // And return current token if there was a match
+            //current_token // And return current token if there was a match
         }
     
         /**
@@ -76,13 +80,29 @@ pub mod parser {
         }
 
         /**
+         * Following example in: https://ruslanspivak.com/lsbasi-part7/
          * Expression
-         *   : Literal
+         *   : Term ((PLUS | MINUS) Term)*
          *   ;
          */
         fn expression(&mut self) -> Node {
-            return self.literal();
-            //let left = self.literal();
+            let mut left = self.term(); // Search for left term
+            
+            while self.next_token.ttype == "PLUS" || self.next_token.ttype == "MINUS" {
+                let current_operator = self.get_next_token();
+                if current_operator.ttype == "PLUS" { // Handle PLUS operator
+                    self.eat_token("PLUS") // consume token
+                } else if current_operator.ttype == "MINUS" {
+                    self.eat_token("MINUS") // consume token
+                }
+                let right = self.term();
+                left = Node {
+                    ntype: String::from("AdditiveExpression"),
+                    nvalue: current_operator.tvalue,
+                    children: Vec::from([left, right])
+                }
+            }
+            return left; // return either single term or result of chain of additive expressions if present
             
         }
 
@@ -92,7 +112,15 @@ pub mod parser {
          *   : AdditiveExpression ADDITIVE_OPERATOR Literal
          *   ;
          */
+        fn additive_expression(&mut self) -> Node {
+            return self.literal();
+        }
     
+
+        fn term(&mut self) -> Node {
+            return self.literal();
+        }
+
         /**
          * Literal
          *   : NumericLiteral
@@ -114,7 +142,8 @@ pub mod parser {
          *   : NUMBER
          */
         fn numeric_literal(&mut self) -> Node {
-            let token = self.eat_token("NUMBER");
+            let token = self.get_next_token();
+            self.eat_token("NUMBER");
             /*
             return Node {
                 ntype: String::from("NumericLiteral"),
@@ -129,7 +158,8 @@ pub mod parser {
          *   : STRING
          */
         fn string_literal(&mut self) -> Node {
-            let token = self.eat_token("STRING");
+            let token = self.get_next_token();
+            self.eat_token("STRING");
             Node::new_without_children("StringLiteral", &token.tvalue)
         }
     }
