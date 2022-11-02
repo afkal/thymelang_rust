@@ -5,10 +5,10 @@
  */
 //use compiler_poc::lexer; /* start poc with lexer functionality */
 use std::env;
-mod lexer;
-mod parser;
-pub use crate::lexer::lexer as lxr;
-pub use crate::parser::parser as psr;
+//mod lexer;
+//mod parser;
+pub use thymelang_rust::lexer::Tokenizer;
+pub use thymelang_rust::parser::Parser;
 
 use std::io::{self, Write};
 
@@ -33,11 +33,11 @@ fn main() {
             tokenizer.print_all_tokens();
             */
 
-            let mut tokenizer = lxr::Tokenizer::new(&input); // instantiate new lexer from source
+            let mut tokenizer = Tokenizer::new(&input); // instantiate new lexer from source
             tokenizer.print_all_tokens();
 
             // Parsing 
-            let mut parser = psr::Parser::new(&input);
+            let mut parser = Parser::new(&input);
             let result = parser.parse();
             println!("{:?}",result);
 
