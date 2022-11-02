@@ -3,10 +3,9 @@
  * Reference: https://github.com/jauhien/iron-kaleidoscope#basic-variant-of-the-kaleidoscope-language
  * Book with Rust: https://createlang.rs/
  */
-//use compiler_poc::lexer; /* start poc with lexer functionality */
-use std::env;
-//mod lexer;
-//mod parser;
+
+//use std::env;
+
 pub use thymelang_rust::lexer::Tokenizer;
 pub use thymelang_rust::parser::Parser;
 
