@@ -53,13 +53,12 @@ pub mod parser {
             return self.program(); // return the output of the runned program
         }
 
-        /**
-         * Consume current token and advance to next token
-         */
+        ///
+        /// Consume current token and get next token from input stream
+        ///
         fn eat_token(&mut self, token_type : &str) {
 
             //let current_token = self.next_token.clone(); // Clone next token to current local token
-            let current_token = self.next_token.clone();
             if self.next_token.ttype == "".to_string() || self.next_token.ttype != token_type {
                 panic!("Expected token type: {}",token_type)
             }
@@ -79,12 +78,11 @@ pub mod parser {
             return self.expression();
         }
 
-        /**
-         * Following example in: https://ruslanspivak.com/lsbasi-part7/
-         * Expression
-         *   : Term ((PLUS | MINUS) Term)*
-         *   ;
-         */
+        ///
+        /// Following example in: https://ruslanspivak.com/lsbasi-part7/
+        /// Expression
+        ///   : Term ((PLUS | MINUS) Term)*
+        ///   ;
         fn expression(&mut self) -> Node {
             let mut left = self.term(); // Search for left term
             
@@ -106,20 +104,39 @@ pub mod parser {
             
         }
 
-        /**
-         * AdditiveExpression
-         *   : Literal
-         *   : AdditiveExpression ADDITIVE_OPERATOR Literal
-         *   ;
-         */
-        fn additive_expression(&mut self) -> Node {
-            return self.literal();
-        }
-    
-
+        /// Term
+        ///   : Factor ((MUL | DIV) Factor)*
+        ///   ;
         fn term(&mut self) -> Node {
-            return self.literal();
+            // TODO
+            let mut left = self.literal(); // Initiate left literal
+
+            while self.next_token.ttype == "MUL" || self.next_token.ttype == "DIV" {
+                let current_operator = self.get_next_token();
+                if current_operator.ttype == "MUL" { // Handle PLUS operator
+                    self.eat_token("MUL") // consume token
+                } else if current_operator.ttype == "DIV" {
+                    self.eat_token("DIV") // consume token
+                }
+                let right = self.literal();
+                left = Node {
+                    ntype: String::from("MultiplicationTerm"),
+                    nvalue: current_operator.tvalue,
+                    children: Vec::from([left, right])
+                }
+            }
+            return left; // return either single literal or result of chain of multiplication expressions if present
+
         }
+
+        /// Factor
+        ///  : PLUS Factor
+        ///  | MINUS Factor
+        ///  | Literal
+        ///  | LPAREN expr RPAREN
+        ///  | Variable
+        ///  ;
+        //fn factor(mut &self) -> Node {
 
         /**
          * Literal
