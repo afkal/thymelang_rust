@@ -12,7 +12,7 @@ Library contents
 
 Thymelang operators and commands currently supported
 
-- + operator (PLUS)
-- - operator (MINUS)
-- * operator (MUL)
-- / operator (DIV)
+- '+' operator (PLUS)
+- '-' operator (MINUS)
+- '*' operator (MUL)
+- '/' operator (DIV)
