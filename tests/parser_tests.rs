@@ -58,3 +58,12 @@ fn test_parenthesis_order_of_operation() {
     let expexted = "{\"ntype\":\"MultiplicationTerm\",\"nvalue\":\"*\",\"children\":[{\"ntype\":\"AdditiveExpression\",\"nvalue\":\"+\",\"children\":[{\"ntype\":\"NumericLiteral\",\"nvalue\":\"1\",\"children\":[]},{\"ntype\":\"NumericLiteral\",\"nvalue\":\"2\",\"children\":[]}]},{\"ntype\":\"NumericLiteral\",\"nvalue\":\"3\",\"children\":[]}]}";
     assert_eq!(expexted, result_json);
 }
+
+#[test]
+fn test_unary_operator() {
+    let mut prs = parser::Parser::new("1+-2");
+    let result = prs.parse();
+    let result_json = serde_json::to_string(&result).unwrap();
+    let expexted = "{\"ntype\":\"AdditiveExpression\",\"nvalue\":\"+\",\"children\":[{\"ntype\":\"NumericLiteral\",\"nvalue\":\"1\",\"children\":[]},{\"ntype\":\"UnaryOp\",\"nvalue\":\"-\",\"children\":[{\"ntype\":\"NumericLiteral\",\"nvalue\":\"2\",\"children\":[]}]}]}";
+    assert_eq!(expexted, result_json);
+}
