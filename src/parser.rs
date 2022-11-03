@@ -155,23 +155,34 @@ impl Parser {
     ///  | Variable
     ///  ;
     fn factor(&mut self) -> Node {
-        let oper = self.get_next_token();
-        // Handle parenthesis "( __ )"
-        if oper.ttype == "LPAREN" {
+        let token = self.get_next_token();
+
+        if token.ttype == "LPAREN" {
+            // Handle parenthesis "( __ )"
             self.eat_token("LPAREN"); // Eat left parenthesis "("
             let node = self.expression(); // Handle expression between parenthesis
             self.eat_token("RPAREN"); // Eat right parenthesis ")"
             return node;
         }
+        if token.ttype == "IDENTIFIER" {
+            return self.variable();
+        }
         return self.literal();
     }
 
-    /**
-     * Literal
-     *   : NumericLiteral
-     *   | StringLiteral
-     *   ;
-     */
+    /// Variables are mutable, i.e., their values can be changed and updated.
+    fn variable(&mut self) -> Node {
+        let token = self.get_next_token();
+        self.eat_token("IDENTIFIER"); // Expect identifier token
+        return Node::new_without_children("Variable", &token.tvalue)
+    }
+
+    ///
+    /// Literal
+    ///   : NumericLiteral
+    ///   | StringLiteral
+    ///   ;
+    ///
     fn literal(&mut self) -> Node {
         if self.next_token.ttype == "NUMBER" {
             return self.numeric_literal();
@@ -228,6 +239,14 @@ mod tests {
         let mut parser = Parser::new("\"Testing\"");
         let result = parser.parse();
         let expected = Node::new_without_children("StringLiteral", "\"Testing\"");
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_parse_identifier() {
+        let mut parser = Parser::new("aaVa_12");
+        let result = parser.parse();
+        let expected = Node::new_without_children("Variable", "aaVa_12");
         assert_eq!(expected, result);
     }
 }

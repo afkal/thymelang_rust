@@ -21,7 +21,7 @@ const REGEX_ARRAY: [(&str,&str);16] = [
     (r####"^"(.*?)""####, "STRING"), // STRING
     //(re(stringFilter), "STRING"),
     // Identifier
-    (r"^[_a-zA-Z][a-zA-Z0-9_]+", "IDENTIFIER")
+    (r"^[_a-z][a-zA-Z0-9_]*", "IDENTIFIER")
 ];
 
 #[derive(PartialEq, Debug, Clone)]
@@ -181,13 +181,36 @@ mod tests {
     }
 
     #[test]
-    fn test_tokenizer_identifier() {
+    fn test_valid_identifier() {
+        let mut tokenizer = Tokenizer::new("jii_haa16");
+        let result = tokenizer.get_next_token();
+        let expected = Token {
+            ttype: String::from("IDENTIFIER"),
+            tvalue: String::from("jii_haa16")
+        };
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_invalid_identifier() {
         let mut tokenizer = Tokenizer::new("Jii_haa16");
         let result = tokenizer.get_next_token();
-        let nexpected = Token {
-            ttype: String::from("IDENTIFIER"),
-            tvalue: String::from("Jii_haa16")
+        let expected = Token {
+            ttype: String::from("ERROR"),
+            tvalue: String::from("ERROR")
         };
-        assert_eq!(nexpected, result);
+        assert_eq!(expected, result);
     }
+
+    #[test]
+    fn test_short_identifier() {
+        let mut tokenizer = Tokenizer::new("a");
+        let result = tokenizer.get_next_token();
+        let expected = Token {
+            ttype: String::from("IDENTIFIER"),
+            tvalue: String::from("a")
+        };
+        assert_eq!(expected, result);
+    }
+
 }
