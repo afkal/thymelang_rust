@@ -157,12 +157,26 @@ impl Parser {
     fn factor(&mut self) -> Node {
         let token = self.get_next_token();
 
+        // Handle parenthesis "( __ )"
         if token.ttype == "LPAREN" {
-            // Handle parenthesis "( __ )"
-            self.eat_token("LPAREN"); // Eat left parenthesis "("
+            self.eat_token("LPAREN"); // Consume token left parenthesis "("
             let node = self.expression(); // Handle expression between parenthesis
-            self.eat_token("RPAREN"); // Eat right parenthesis ")"
+            self.eat_token("RPAREN"); // Consume token right parenthesis ")"
             return node;
+        }
+        // Handle unary operator PLUS
+        if token.ttype == "PLUS" {
+            self.eat_token("PLUS"); // Consume token
+            let mut children : Vec<Node> = Vec::new();
+            children.push(self.factor()); // Get factor from the right hand side
+            return Node::new("UnaryOp", &token.tvalue, children);
+        }
+        // Handle unary operator MINUS
+        if token.ttype == "MINUS" {
+            self.eat_token("MINUS"); // Consume token
+            let mut children : Vec<Node> = Vec::new();
+            children.push(self.factor()); // Get factor from the right hand side
+            return Node::new("UnaryOp", &token.tvalue, children);
         }
         if token.ttype == "IDENTIFIER" {
             return self.variable();
@@ -190,7 +204,7 @@ impl Parser {
         if self.next_token.ttype == "STRING" {
             return self.string_literal();
         }
-        panic!("Unexpected literal!")
+        panic!("Error: unexpected literal: '{}', expected String or Number.", self.next_token.tvalue);
     }
 
     /**
