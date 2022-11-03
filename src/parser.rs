@@ -1,11 +1,20 @@
+use std::fmt;
+use serde::Serialize;
 use crate::lexer::Tokenizer;
 use crate::lexer::Token;
 
-#[derive(PartialEq, Debug, Clone)] // Enable formatted printing "{:?}"
+#[derive(PartialEq, Debug, Clone, Serialize)]
 pub struct Node {
     ntype: String,
     nvalue: String,
     children: Vec<Node>
+}
+
+// Implement display formatter for pretty printing Nodes
+impl fmt::Display for Node {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "ntype: {}", self.ntype)
+    }
 }
 
 impl Node {
@@ -53,7 +62,7 @@ impl Parser {
         // Lookahead is a next token used for predictive parsing (LL1 parser)
         self.next_token = self.tokenizer.get_next_token();
         
-        println!("Parsing token: ({}, {})", self.next_token.ttype, self.next_token.tvalue);
+        //println!("Parsing token: ({}, {})", self.next_token.ttype, self.next_token.tvalue);
 
         // Parse recursively
         return self.program(); // return the output of the runned program
@@ -93,7 +102,7 @@ impl Parser {
         let mut left = self.term(); // Search for left term
 
         // TODO: Refactor to binary_operation
-        //self.binary_operation()
+        //left = self.binary_operation(&left, "AdditiveExpression");
         
         while self.next_token.ttype == "PLUS" || self.next_token.ttype == "MINUS" {
             let current_operator = self.get_next_token();
@@ -118,7 +127,7 @@ impl Parser {
     ///   ;
     fn term(&mut self) -> Node {
         // TODO
-        let mut left = self.literal(); // Initiate left literal
+        let mut left = self.factor(); // Initiate left literal
 
         while self.next_token.ttype == "MUL" || self.next_token.ttype == "DIV" {
             let current_operator = self.get_next_token();
@@ -127,7 +136,7 @@ impl Parser {
             } else if current_operator.ttype == "DIV" {
                 self.eat_token("DIV") // consume token
             }
-            let right = self.literal();
+            let right = self.factor();
             left = Node {
                 ntype: String::from("MultiplicationTerm"),
                 nvalue: current_operator.tvalue,
@@ -145,7 +154,17 @@ impl Parser {
     ///  | LPAREN expr RPAREN
     ///  | Variable
     ///  ;
-    //fn factor(mut &self) -> Node {
+    fn factor(&mut self) -> Node {
+        let oper = self.get_next_token();
+        // Handle parenthesis "( __ )"
+        if oper.ttype == "LPAREN" {
+            self.eat_token("LPAREN"); // Eat left parenthesis "("
+            let node = self.expression(); // Handle expression between parenthesis
+            self.eat_token("RPAREN"); // Eat right parenthesis ")"
+            return node;
+        }
+        return self.literal();
+    }
 
     /**
      * Literal

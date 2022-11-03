@@ -7,3 +7,6 @@ edition = "2021"
 
 [dependencies]
 regex = "1"
+# Serde used for tests to serialize structs
+serde = { version = "1.0.126", features = ["derive"] }
+serde_json = "1.0.64"
