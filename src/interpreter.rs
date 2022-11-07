@@ -55,7 +55,7 @@ fn visit(node: Node) -> String {
 }
 
 /// Interpret AST provided (by parser)
-pub fn interpret(ast: Node) {
+pub fn interpret(ast: Node) -> String {
     let result = visit(ast);
-    println!("{}", result)
+    return result;
 }

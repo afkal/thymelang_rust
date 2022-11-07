@@ -13,7 +13,8 @@ pub use thymelang_rust::interpreter::{interpret};
 use std::io::{self, Write};
 
 fn main() {
-    println!("Thymelang interpreter v0.1. Type 'q' to Quit");
+    println!("Thymelang v0.1 (c) Proactor 2022");
+    println!("Type 'q' to Quit");
     //let mut input;
     loop {
         //input = "".to_string();
@@ -37,7 +38,8 @@ fn main() {
             println!("{:?}",ast);
 
             // Interpreter
-            interpret(ast);
+            let result = interpret(ast);
+            println!("= {}", result);
 
             /*
             Nim reference implementation:
