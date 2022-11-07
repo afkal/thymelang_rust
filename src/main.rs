@@ -8,11 +8,12 @@
 
 pub use thymelang_rust::lexer::Tokenizer;
 pub use thymelang_rust::parser::Parser;
+pub use thymelang_rust::interpreter::{interpret};
 
 use std::io::{self, Write};
 
 fn main() {
-    println!("Rust compiler/interpreter PoC. Type 'q' to Quit");
+    println!("Thymelang interpreter v0.1. Type 'q' to Quit");
     //let mut input;
     loop {
         //input = "".to_string();
@@ -27,19 +28,16 @@ fn main() {
         } else {
 
             // Testing tokenizer
-            /* Old implementation works against "lexer_old.rs"
-            let mut tokenizer = lxr::Tokenizer::new(&input); // instantiate new lexer from source
-            tokenizer.print_all_tokens();
-            */
-
             let mut tokenizer = Tokenizer::new(&input); // instantiate new lexer from source
             tokenizer.print_all_tokens();
 
             // Parsing 
             let mut parser = Parser::new(&input);
-            let result = parser.parse();
-            println!("{:?}",result);
+            let ast = parser.parse();
+            println!("{:?}",ast);
 
+            // Interpreter
+            interpret(ast);
 
             /*
             Nim reference implementation:

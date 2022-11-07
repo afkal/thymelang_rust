@@ -5,9 +5,9 @@ use crate::lexer::Token;
 
 #[derive(PartialEq, Debug, Clone, Serialize)]
 pub struct Node {
-    ntype: String,
-    nvalue: String,
-    children: Vec<Node>
+    pub ntype: String,
+    pub nvalue: String,
+    pub children: Vec<Node>
 }
 
 // Implement display formatter for pretty printing Nodes
@@ -82,19 +82,63 @@ impl Parser {
         //current_token // And return current token if there was a match
     }
 
-    /**
-     * Main entry point.
-     * 
-     * Program
-     *   : Expression
-     *   ;
-     */
+    ///
+    /// Main entry point.
+    /// 
+    /// Program
+    ///   : Statementlist
+    ///   ;
+    ///
     fn program(&mut self) -> Node {
+        let children = self.statementlist();
+        return Node::new("Program", "Root", children);
+    }
+
+    /// Statementlist, list of statements divided by semicolons
+    /// Statementlist
+    ///   : Statement SEMICOLON Statementlist
+    ///   ;
+    fn statementlist(&mut self) -> Vec<Node> {
+        let mut statements : Vec<Node> = Vec::new();
+        let node = self.statement(); // Get result from first statement
+        statements.push(node);
+        // Loop while SEMICOLON(s) found at the end of statement
+        while self.get_next_token().ttype == "SEMICOLON" {
+            self.eat_token("SEMICOLON");
+            // Add new statement to the list in case no end-of-file was reached
+            if self.get_next_token().ttype != "EOF" {
+                statements.push(self.statement());
+            }
+        }
+        return statements;
+    }
+
+    ///  Statement
+    ///   : Assignment statement
+    ///   | Expression
+    ///   ;
+    fn statement(&mut self) -> Node {
+        // Assignment statement starts with Identifier (Variable name)
+        if self.get_next_token().ttype == "IDENTIFIER" {
+            return self.assignment_statement();
+        }
+        // If not assignment return expression - pure expressions temporarely supported
         return self.expression();
     }
 
-    ///
-    /// Following example in: https://ruslanspivak.com/lsbasi-part7/
+    /// Assignment statement
+    ///   : Variable ASSIGN Expression
+    ///   ;
+    fn assignment_statement(&mut self) -> Node { 
+        // Find variable as left token
+        let left = self.variable();
+        let oper = self.get_next_token();
+        self.eat_token("ASSIGN"); // Expect ASSIGN operator
+        let right = self.expression();
+        let result = Node::new("AssignmentStatement", &oper.tvalue, Vec::from([left, right]));
+        return result;
+    }
+
     /// Expression
     ///   : Term ((PLUS | MINUS) Term)*
     ///   ;
@@ -178,9 +222,11 @@ impl Parser {
             children.push(self.factor()); // Get factor from the right hand side
             return Node::new("UnaryOp", &token.tvalue, children);
         }
+        // Handle IDENTIFIER
         if token.ttype == "IDENTIFIER" {
             return self.variable();
         }
+        // Handle LITERAL
         return self.literal();
     }
 
@@ -207,10 +253,10 @@ impl Parser {
         panic!("Error: unexpected literal: '{}', expected String or Number.", self.next_token.tvalue);
     }
 
-    /**
-     * NumericLiteral
-     *   : NUMBER
-     */
+    ///
+    /// NumericLiteral
+    ///   : NUMBER
+    ///
     fn numeric_literal(&mut self) -> Node {
         let token = self.get_next_token();
         self.eat_token("NUMBER");
@@ -223,10 +269,10 @@ impl Parser {
         Node::new_without_children("NumericLiteral", &token.tvalue)
     }
 
-    /**
-     * StringLiteral
-     *   : STRING
-     */
+    ///
+    /// StringLiteral
+    ///   : STRING
+    ///
     fn string_literal(&mut self) -> Node {
         let token = self.get_next_token();
         self.eat_token("STRING");
@@ -245,7 +291,7 @@ mod tests {
         let mut parser = Parser::new("153");
         let result = parser.parse();
         let expected = Node::new_without_children("NumericLiteral", "153");
-        assert_eq!(expected, result);
+        assert_eq!(expected, result.children[0]);
     }
 
     #[test]
@@ -253,7 +299,7 @@ mod tests {
         let mut parser = Parser::new("\"Testing\"");
         let result = parser.parse();
         let expected = Node::new_without_children("StringLiteral", "\"Testing\"");
-        assert_eq!(expected, result);
+        assert_eq!(expected, result.children[0]);
     }
 
     #[test]
@@ -261,6 +307,6 @@ mod tests {
         let mut parser = Parser::new("aaVa_12");
         let result = parser.parse();
         let expected = Node::new_without_children("Variable", "aaVa_12");
-        assert_eq!(expected, result);
+        assert_eq!(expected, result.children[0]);
     }
 }

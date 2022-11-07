@@ -64,9 +64,17 @@ impl Tokenizer {
             return Token::new("EOF", "EOF");
         }
 
+        // Consume spaces
+        if self.source.chars().nth(self.position).unwrap()==' ' {
+            self.position += 1;
+            if self.position >= self.source.chars().count().try_into().unwrap() {
+                return Token::new("EOF", "EOF");
+            }
+        }
+
         // Target is the remaining source to evaluate
         let target = &self.source[self.position..self.source.len()];
-        //println!("Target: {}",target);
+
         // Loop regex array to find matching token
         for item in REGEX_ARRAY {
             //println!("Evaluating regexp: {}", item.0);
