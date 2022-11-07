@@ -5,15 +5,23 @@
  */
 
 //use std::env;
-
+use clap::Parser as Clap;
+use std::io::{self, Write};
 pub use thymelang_rust::lexer::Tokenizer;
 pub use thymelang_rust::parser::Parser;
 pub use thymelang_rust::interpreter::{interpret};
 
-use std::io::{self, Write};
+#[derive(Clap)]
+struct Cli {
+    /// The pattern to look for
+    options: String,
+    /// The path to the file to read
+    path: std::path::PathBuf,
+}
 
 fn main() {
-    println!("Thymelang v0.1 (c) Proactor 2022");
+    let _args = Cli::parse();
+    println!("Thymelang v0.10 (c) Proactor 2022");
     println!("Type 'q' to Quit");
     //let mut input;
     loop {

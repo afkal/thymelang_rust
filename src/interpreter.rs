@@ -1,5 +1,15 @@
 use crate::parser::Node;
+use std::collections::HashMap;
 
+/// Hashmap implementation still to be designed how
+pub struct SymbolTable {
+    _table: HashMap<String, String>
+}
+
+fn visit_assignment_statement(_node: Node) -> String {
+    // TODO: Store value to symbol table
+    return String::from("Not yet implemented :(");
+}
 
 fn visit_binaryop(node: Node) -> String {
 
@@ -15,7 +25,6 @@ fn visit_binaryop(node: Node) -> String {
         "/" => return (left_int/right_int).to_string(),
         _ => panic!("Invalid binary operator: \"{}\"", node.nvalue)
     }
-    return node.nvalue.clone();
 }
 
 fn visit_unaryop(node: Node) -> String {
@@ -50,6 +59,7 @@ fn visit(node: Node) -> String {
         "NumericLiteral" | "StringLiteral" => return node.nvalue,
         "UnaryOp" => return visit_unaryop(node),
         "AdditiveExpression" | "MultiplicationTerm" => return visit_binaryop(node),
+        "AssignmentStatement" => return visit_assignment_statement(node),
         _ => return String::from("Thyme Error: Could not interpret."),
     }
 }
