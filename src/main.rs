@@ -7,21 +7,24 @@
 //use std::env;
 use clap::Parser as Clap;
 use std::io::{self, Write};
-pub use thymelang_rust::lexer::Tokenizer;
-pub use thymelang_rust::parser::Parser;
-pub use thymelang_rust::interpreter::{interpret};
+pub use thymelang::lexer::Tokenizer;
+pub use thymelang::parser::Parser;
+pub use thymelang::interpreter::{interpret};
 
+/// Thymelang interpreter
 #[derive(Clap)]
-struct Cli {
-    /// The pattern to look for
-    options: String,
-    /// The path to the file to read
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Run in debug mode
+    #[arg(short, action)]
+    debug: bool,
+    /// Source file path
     path: std::path::PathBuf,
 }
 
 fn main() {
-    let _args = Cli::parse();
-    println!("Thymelang v0.10 (c) Proactor 2022");
+    let _args = Args::parse();
+    println!("Thymelang v0.10 (c) <proactor> 2022");
     println!("Type 'q' to Quit");
     //let mut input;
     loop {

@@ -1,7 +1,9 @@
 [package]
-name = "thymelang_rust"
+name = "thymelang"
 version = "0.1.0"
 edition = "2021"
+authors = ["Timo Laitila <timo@proactor.dev>"]
+description = "Thymelang interpreter"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
