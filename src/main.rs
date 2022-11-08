@@ -27,6 +27,7 @@ fn main() {
     println!("Thymelang v0.10 (c) <proactor> 2022");
     println!("Type 'q' to Quit");
     //let mut input;
+    
     loop {
         //input = "".to_string();
         let mut input = String::new();
@@ -50,7 +51,7 @@ fn main() {
 
             // Interpreter
             let result = interpret(ast);
-            println!("= {}", result);
+            println!(": {}", result);
 
             /*
             Nim reference implementation:

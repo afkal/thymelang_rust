@@ -27,3 +27,19 @@ fn test_calculator_expressions() {
     run_interpreter_test("7 + 3 * (10 / (12 / (3 + 1) - 1))", "22");
     run_interpreter_test("7 + 3 * (10 / (12 / (3 + 1) - 1)) / (2 + 3) - 5 - 3 + (8)", "10");
 }
+
+fn test_unary_operator() {
+    run_interpreter_test("-1", "-1");
+    run_interpreter_test("--1", "1");
+}
+
+fn test_multiple_expressions() {
+    run_interpreter_test("1+2; 3*4;", "12");
+}
+
+#[test]
+fn test_assignment_statements() {
+    run_interpreter_test("a=2", "2");
+    run_interpreter_test("a=10; b=a+5", "15");
+    run_interpreter_test("a=10; b=a+5; c=5*a - - b;", "65");
+}
