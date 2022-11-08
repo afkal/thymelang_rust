@@ -1,5 +1,5 @@
-use thymelang_rust::parser;
-use thymelang_rust::parser::Node;
+use thymelang::parser;
+use thymelang::parser::Node;
 
 #[test]
 fn test_additive_expression() {

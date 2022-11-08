@@ -2,13 +2,15 @@ use crate::parser::Node;
 use std::collections::HashMap;
 
 /// Hashmap implementation still to be designed how
-pub struct SymbolTable {
-    _table: HashMap<String, String>
+pub struct Interpreter {
+    symbol_table: HashMap<String, String>
 }
 
-fn visit_assignment_statement(_node: Node) -> String {
-    // TODO: Store value to symbol table
-    return String::from("Not yet implemented :(");
+impl Interpreter {
+    fn visit_assignment_statement(_node: Node) -> String {
+        // TODO: Store value to symbol table
+        return String::from("AsssingmentStatement Not yet implemented :(");
+    }
 }
 
 fn visit_binaryop(node: Node) -> String {
@@ -59,13 +61,16 @@ fn visit(node: Node) -> String {
         "NumericLiteral" | "StringLiteral" => return node.nvalue,
         "UnaryOp" => return visit_unaryop(node),
         "AdditiveExpression" | "MultiplicationTerm" => return visit_binaryop(node),
-        "AssignmentStatement" => return visit_assignment_statement(node),
+        "AssignmentStatement" => return Interpreter::visit_assignment_statement(node),
         _ => return String::from("Thyme Error: Could not interpret."),
     }
 }
 
 /// Interpret AST provided (by parser)
 pub fn interpret(ast: Node) -> String {
+    let interpreter = Interpreter {
+        symbol_table: HashMap::new()
+    };
     let result = visit(ast);
     return result;
 }

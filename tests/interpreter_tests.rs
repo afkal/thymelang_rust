@@ -1,6 +1,6 @@
-use thymelang_rust::parser;
-use thymelang_rust::parser::Node;
-use thymelang_rust::interpreter::{interpret};
+use thymelang::parser;
+use thymelang::parser::Node;
+use thymelang::interpreter::{interpret};
 
 fn run_interpreter_test(input: &str, expected: &str) {
     let mut prs = parser::Parser::new(input);
@@ -8,8 +8,6 @@ fn run_interpreter_test(input: &str, expected: &str) {
     let result = interpret(ast);
     assert_eq!(expected, result);   
 }
-
-
 
 #[test]
 fn test_additive_expression() {
