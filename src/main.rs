@@ -15,18 +15,25 @@ pub use thymelang::interpreter::Interpreter;
 #[derive(Clap)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Run in debug mode, optional argument (boolean)
+    /// Run in debug mode
     #[arg(short, action)]
-    debug: bool,
+    debug: bool, // optional argument (boolean)
     /// Source file path
     path: Option<std::path::PathBuf>, // Made optional so that program can be run without filepath
 }
 
 fn main() {
+
     let args = Args::parse();
+    match args.path {
+        Some(path) => {
+            println!("Path \"{}\" provided. Running script from file not yet supported.", path.display());
+            return;
+        },
+        None => {},
+    };
     println!("Thymelang v0.10 (c) <proactor> 2022");
-    println!("Type 'q' to Quit");
-    //let mut input;
+    println!("Type 'quit()' to Quit");
 
     // Instantiate interpreter with symbol table.
     // Interpreter shall remain same during whole REPL session
@@ -35,7 +42,6 @@ fn main() {
 
     // Start REPL loop
     loop {
-        //input = "".to_string();
         let mut input = String::new();
         print!("{}","thyme> ");
         io::stdout().flush().unwrap();

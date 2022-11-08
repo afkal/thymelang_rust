@@ -1,5 +1,4 @@
 use thymelang::parser;
-use thymelang::parser::Node;
 use thymelang::interpreter::{interpret};
 
 fn run_interpreter_test(input: &str, expected: &str) {
@@ -28,11 +27,17 @@ fn test_calculator_expressions() {
     run_interpreter_test("7 + 3 * (10 / (12 / (3 + 1) - 1)) / (2 + 3) - 5 - 3 + (8)", "10");
 }
 
+#[test]
 fn test_unary_operator() {
     run_interpreter_test("-1", "-1");
     run_interpreter_test("--1", "1");
+    run_interpreter_test("+(2*4)","8");
+    run_interpreter_test("-(2*3)","-6");
+    run_interpreter_test("-(2+3)","-5");
+    run_interpreter_test("--+-+-8","8");
 }
 
+#[test]
 fn test_multiple_expressions() {
     run_interpreter_test("1+2; 3*4;", "12");
 }

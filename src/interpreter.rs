@@ -65,18 +65,23 @@ impl Interpreter {
 
     fn visit_unaryop(&mut self, node: Node) -> String {
 
-        /* In case unaryop is "+" return value of child node */
+        /* In case unaryop is "+" return visited child node */
         if node.nvalue == "+" {
-            return node.children[0].nvalue.clone();
+            return self.visit(node.children[0].clone());
         }
 
         match node.children[0].ntype.as_str() {
-            "NumericLiteral" => return String::from("-")+&node.children[0].nvalue,
-            "Variable" => {
-                let val = self.visit(node.children[0].clone());
-                return String::from("-")+&val;
+            "NumericLiteral" => {
+                let val = node.children[0].nvalue.clone();
+                let val_int = val.parse::<i32>().unwrap();
+                return (-1 * val_int).to_string();
             },
-            _ => panic!("Unaryoperation not supported for type: \"{}\". Error occurred with item: {}", node.children[0].ntype, node.children[0].nvalue),
+            "Variable" | "UnaryOp" | "MultiplicationTerm" | "AdditiveExpression" => {
+                let val = self.visit(node.children[0].clone());
+                let val_int = val.parse::<i32>().unwrap();
+                return (-1 * val_int).to_string();
+            },
+            _ => panic!("UnaryOperation not supported for type: \"{}\". Error occurred with item: {}", node.children[0].ntype, node.children[0].nvalue),
         }
     }
 
