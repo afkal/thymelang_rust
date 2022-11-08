@@ -8,6 +8,17 @@ pub struct Interpreter {
 
 impl Interpreter {
 
+    pub fn new() -> Self {
+        Self {
+            symbol_table: HashMap::new()
+        }
+    }
+
+    /// Interpret AST provided (by parser)
+    pub fn interpret(&mut self, ast: Node) -> String {
+        return self.visit(ast);
+    }
+
     fn visit_variable(&mut self, node: Node) -> String {
         let result = self.symbol_table.get(&node.nvalue);
         match result {
@@ -100,6 +111,5 @@ pub fn interpret(ast: Node) -> String {
     let mut interpreter = Interpreter {
         symbol_table: HashMap::new()
     };
-    let result = interpreter.visit(ast);
-    return result;
+    return interpreter.visit(ast);
 }
