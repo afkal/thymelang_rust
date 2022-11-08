@@ -173,6 +173,10 @@ impl Parser {
         // TODO
         let mut left = self.factor(); // Initiate left literal
 
+        if self.next_token.ttype == "ERROR" {
+            panic!("Parser error: Invalid operator!");
+        }
+
         while self.next_token.ttype == "MUL" || self.next_token.ttype == "DIV" {
             let current_operator = self.get_next_token();
             if current_operator.ttype == "MUL" { // Handle PLUS operator

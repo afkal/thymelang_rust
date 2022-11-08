@@ -59,7 +59,7 @@ impl Interpreter {
             "-" => return (left_int-right_int).to_string(),
             "*" => return (left_int*right_int).to_string(),
             "/" => return (left_int/right_int).to_string(),
-            _ => panic!("Invalid binary operator: \"{}\"", node.nvalue)
+            val => panic!("Invalid binary operator: \"{}\"", val)
         }
     }
 
@@ -106,7 +106,7 @@ impl Interpreter {
             "AdditiveExpression" | "MultiplicationTerm" => return self.visit_binaryop(node),
             "AssignmentStatement" => return self.visit_assignment_statement(node),
             "Variable" => return self.visit_variable(node),
-            _ => return String::from("Thyme Error: Could not interpret."),
+            ntype => return format!("Thyme Error: Could not interpret. Unknown type: \"{}\"", ntype),
         }
     }
 }

@@ -88,7 +88,14 @@ impl Tokenizer {
             }
         }
         // No Match found - return error
-        return Token::new("ERROR", "ERROR");
+        //return Token::new("ERROR", "ERROR");
+        let size : usize;
+        if target.len() < 15 {
+            size = target.len();
+        } else {
+            size = 15;
+        }
+        panic!("Parser error: Unknown token \"{}\" at position: {}", &target[0..size], self.position);
     }
 
     pub fn print_all_tokens(&mut self) {
@@ -178,6 +185,7 @@ mod tests {
     }
 
     #[test]
+    #[should_panic]
     fn test_tokenizer_incomplete_string() {
         let mut tokenizer = Tokenizer::new("\"jiihaa");
         let result = tokenizer.get_next_token();
@@ -200,6 +208,7 @@ mod tests {
     }
 
     #[test]
+    #[should_panic]
     fn test_invalid_identifier() {
         let mut tokenizer = Tokenizer::new("Jii_haa16");
         let result = tokenizer.get_next_token();
