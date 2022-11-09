@@ -37,6 +37,12 @@ impl Interpreter {
         //return format!("AssingmentStatement Not yet implemented for \"{} = {}\"", variable, value);
     }
 
+    /// Print statement returns the value of expression on the child node
+    fn visit_print_statement(&mut self, node: Node) -> String {
+        let value = self.visit(node.children[0].clone());
+        return value;
+    }
+
     fn visit_binaryop(&mut self, node: Node) -> String {
 
         let left = self.visit(node.children[0].clone());
@@ -101,6 +107,7 @@ impl Interpreter {
 
         match node.ntype.as_str() {
             "Program" => return self.visit_program(node),
+            "PrintStatement" => return self.visit_print_statement(node),
             "NumericLiteral" | "StringLiteral" => return node.nvalue,
             "UnaryOp" => return self.visit_unaryop(node),
             "AdditiveExpression" | "MultiplicationTerm" => return self.visit_binaryop(node),

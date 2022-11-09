@@ -1,6 +1,6 @@
 use regex::Regex;
 
-const REGEX_ARRAY: [(&str,&str);16] = [
+const REGEX_ARRAY: [(&str,&str);17] = [
     (r"\n", "EOL"), // Newline
     // Numbers
     (r"^([0-9]*[.])?[0-9]+", "NUMBER"), // WILL BE FLOAT IN FUTURE?
@@ -17,6 +17,8 @@ const REGEX_ARRAY: [(&str,&str);16] = [
     (r"^;", "SEMICOLON"), // SEMICOLON
     (r"^\{", "LCURLY"), // LEFT CURLY BRACKET
     (r"^\}", "RCURLY"), // RIGHT CURLY BRACKET
+    // Reserved words
+    (r"^print", "PRINT"), // RIGHT CURLY BRACKET
     // String
     (r####"^"(.*?)""####, "STRING"), // STRING
     //(re(stringFilter), "STRING"),

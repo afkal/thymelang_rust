@@ -121,9 +121,21 @@ impl Parser {
         // Assignment statement starts with Identifier (Variable name)
         if self.get_next_token().ttype == "IDENTIFIER" {
             return self.assignment_statement();
+        } else if self.get_next_token().ttype == "PRINT" {
+            return self.print_statement();
         }
-        // If not assignment return expression - pure expressions temporarely supported
+        // If nothing above - expect pure expressions (temporarely supported)
         return self.expression();
+    }
+
+    /// PrintStatement
+    ///   : PRINT expression
+    ///   ;
+    fn print_statement(&mut self) -> Node {
+        let token = self.get_next_token();
+        self.eat_token("PRINT"); // Expect PRINT command
+        let child = self.expression(); // Get expression from right
+        return Node::new("PrintStatement", &token.tvalue, Vec::from([child]));
     }
 
     /// Assignment statement
