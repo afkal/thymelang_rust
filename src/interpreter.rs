@@ -3,14 +3,14 @@ use std::collections::HashMap;
 
 /// Hashmap implementation still to be designed how
 pub struct Interpreter {
-    symbol_table: HashMap<String, String>
+    global_memory: HashMap<String, String> // Global memory for variables and other structrures
 }
 
 impl Interpreter {
 
     pub fn new() -> Self {
         Self {
-            symbol_table: HashMap::new()
+            global_memory: HashMap::new()
         }
     }
 
@@ -20,7 +20,7 @@ impl Interpreter {
     }
 
     fn visit_variable(&mut self, node: Node) -> String {
-        let result = self.symbol_table.get(&node.nvalue);
+        let result = self.global_memory.get(&node.nvalue);
         match result {
             None => panic!("Parser Error: Variable \"{}\" not instantiated.", node.nvalue),
             Some(var) => return var.to_string(),
@@ -32,7 +32,7 @@ impl Interpreter {
         // Store value from the expression to variable
         let variable = node.children[0].nvalue.clone();
         let value = self.visit(node.children[1].clone());
-        self.symbol_table.insert(variable, value.clone());
+        self.global_memory.insert(variable, value.clone());
         return value;
         //return format!("AssingmentStatement Not yet implemented for \"{} = {}\"", variable, value);
     }
@@ -116,12 +116,4 @@ impl Interpreter {
             ntype => return format!("Thyme Error: Could not interpret. Unknown type: \"{}\"", ntype),
         }
     }
-}
-
-/// Interpret AST provided (by parser)
-pub fn interpret(ast: Node) -> String {
-    let mut interpreter = Interpreter {
-        symbol_table: HashMap::new()
-    };
-    return interpreter.visit(ast);
 }

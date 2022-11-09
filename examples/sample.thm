@@ -8,9 +8,18 @@
 // Variable definition: let VAR = VALUE SEMICOLON
 // let is the keyword for defining variables
 // These variables are GLOBAL since they are defined on the module level
-let a_int = 5; // Integer
-let a_float = 5.6; // Float
-let string = "test_string";
+// TBD: Shold Globals be actually supported at all???
+// TBD with our without let keyword???
+a_int = 5; // Integer
+a_float = 5.6; // Float
+string = "test_string";
+array = [1,2,3,4];
+
+// Struct?
+TestStruct = {
+    a = 4;
+    b = 3;
+};
 
 // function definition
 let func = {
@@ -20,7 +29,7 @@ let func = {
 
 // function with arguments and return value
 let sum_ints(a: int, b: int): int = {
-    return a+b;
+    return(a+b);
 };
 
 // Program will start running from main()

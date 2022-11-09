@@ -115,6 +115,7 @@ impl Parser {
 
     ///  Statement
     ///   : Assignment statement
+    ///   | Print statement
     ///   | Expression
     ///   ;
     fn statement(&mut self) -> Node {
