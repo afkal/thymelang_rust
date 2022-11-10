@@ -49,20 +49,23 @@ impl Interpreter {
         let left_as_string = self.visit(node.children[0].clone());
         let right_as_string = self.visit(node.children[1].clone());
 
+        let left: i32;
+        let right: i32;
+
         match left_as_string.parse::<i32>() {
-            Ok(n) => left_int = n,
-            Err(e) => panic!("Parse error: Could not convert {} to int. Error received while parsing: {}", left, e),
+            Ok(n) => left = n,
+            Err(e) => panic!("Parse error: Could not convert {} to int. Error received while parsing: {}", left_as_string, e),
         }
         match right_as_string.parse::<i32>() {
-            Ok(n) => right_int = n,
-            Err(e) => panic!("Parse error: Could not convert {} to int. Error received while parsing: {}", right, e),
+            Ok(n) => right = n,
+            Err(e) => panic!("Parse error: Could not convert {} to int. Error received while parsing: {}", right_as_string, e),
           }
 
         match node.nvalue.as_str() {
-            "+" => return (left_int+right_int).to_string(),
-            "-" => return (left_int-right_int).to_string(),
-            "*" => return (left_int*right_int).to_string(),
-            "/" => return (left_int/right_int).to_string(),
+            "+" => return (left+right).to_string(),
+            "-" => return (left-right).to_string(),
+            "*" => return (left*right).to_string(),
+            "/" => return (left/right).to_string(),
             val => panic!("Invalid binary operator: \"{}\"", val)
         }
     }
