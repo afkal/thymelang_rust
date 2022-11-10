@@ -6,24 +6,24 @@ const REGEX_ARRAY: [(&str,&str);17] = [
     (r"^([0-9]*[.])?[0-9]+", "NUMBER"), // WILL BE FLOAT IN FUTURE?
     (r"^\d+", "NUMBER"), // INT NEEDS TO BE AFTER FLOAT OR FLOAT WILL NOT KICK IN
     // Operators
-    (r"^\(", "LPAREN"), // LEFT PARENTHESIS
-    (r"^\)", "RPAREN"), // RIGHT PARENTHESIS
-    (r"^\*", "MUL"), // MULTIPLY
-    (r"^/", "DIV"), // DIVIDE
-    (r"^\+", "PLUS"), // PLUS
-    (r"^-", "MINUS"), // MINUS
-    (r"^==", "EQUAL"), // EQUALS
-    (r"^=", "ASSIGN"),  // ASSIGN
-    (r"^;", "SEMICOLON"), // SEMICOLON
-    (r"^\{", "LCURLY"), // LEFT CURLY BRACKET
-    (r"^\}", "RCURLY"), // RIGHT CURLY BRACKET
+    (r"^\(", "LPAREN"), // LEFT PARENTHESIS "("
+    (r"^\)", "RPAREN"), // RIGHT PARENTHESIS ")"
+    (r"^\*", "MUL"), // MULTIPLY operator "*"
+    (r"^/", "DIV"), // DIVIDE operator "/"
+    (r"^\+", "PLUS"), // PLUS operator "+"
+    (r"^-", "MINUS"), // MINUS operator "-"
+    (r"^==", "EQUAL"), // EQUALS operator "=="
+    (r"^=", "ASSIGN"),  // ASSIGN operator "="
+    (r"^;", "SEMICOLON"), // SEMICOLON ";"
+    (r"^\{", "LCURLY"), // LEFT CURLY BRACKET "{"
+    (r"^\}", "RCURLY"), // RIGHT CURLY BRACKET "}"
     // Reserved words
-    (r"^print", "PRINT"), // RIGHT CURLY BRACKET
+    (r"^print", "PRINT"), // PRINT statement
     // String
     (r####"^"(.*?)""####, "STRING"), // STRING
     //(re(stringFilter), "STRING"),
     // Identifier
-    (r"^[_a-z][a-zA-Z0-9_]*", "IDENTIFIER")
+    (r"^[_a-z][a-zA-Z0-9_]*", "IDENTIFIER") // everything that do not match reserved words
 ];
 
 #[derive(PartialEq, Debug, Clone)]

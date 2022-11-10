@@ -130,13 +130,17 @@ impl Parser {
     }
 
     /// PrintStatement
-    ///   : PRINT expression
+    ///   : PRINT LPAREN expression RPAREN
     ///   ;
     fn print_statement(&mut self) -> Node {
-        let token = self.get_next_token();
+        let command = self.get_next_token();
         self.eat_token("PRINT"); // Expect PRINT command
+        let _node = self.get_next_token();
+        self.eat_token("LPAREN"); // Expect LPAREN
         let child = self.expression(); // Get expression from right
-        return Node::new("PrintStatement", &token.tvalue, Vec::from([child]));
+        let _node = self.get_next_token();
+        self.eat_token("RPAREN"); // Expect RPAREN
+        return Node::new("PrintStatement", &command.tvalue, Vec::from([child]));
     }
 
     /// Assignment statement

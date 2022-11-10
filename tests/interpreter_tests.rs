@@ -1,10 +1,11 @@
 use thymelang::parser;
-use thymelang::interpreter::{interpret};
+use thymelang::interpreter;
 
 fn run_interpreter_test(input: &str, expected: &str) {
     let mut prs = parser::Parser::new(input);
     let ast = prs.parse();
-    let result = interpret(ast);
+    let mut interpreter = interpreter::Interpreter::new();
+    let result = interpreter.interpret(ast);
     assert_eq!(expected, result);   
 }
 
@@ -12,7 +13,8 @@ fn run_interpreter_test(input: &str, expected: &str) {
 fn test_additive_expression() {
     let mut prs = parser::Parser::new("1+2");
     let ast = prs.parse();
-    let result = interpret(ast);
+    let mut interpreter = interpreter::Interpreter::new();
+    let result = interpreter.interpret(ast);
     let expected = "3";
     assert_eq!(expected, result);
 }

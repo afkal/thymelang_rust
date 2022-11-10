@@ -11,6 +11,7 @@
 // TBD: Shold Globals be actually supported at all???
 // TBD with our without let keyword???
 a_int = 5; // Integer
+// or let a_int = 5;
 a_float = 5.6; // Float
 string = "test_string";
 array = [1,2,3,4];
@@ -34,5 +35,13 @@ let sum_ints(a: int, b: int): int = {
 
 // Program will start running from main()
 let main() = {
+    // print statement:
     print(sum_ints(2,3)); // 5
+    // if statement
+    if(a_int > 10) {
+      print("a_int is bigger than 10");
+    } else {
+      print("a_int is smaller or equal to 10");
+    }
 };
+
