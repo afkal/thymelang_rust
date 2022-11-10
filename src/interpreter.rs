@@ -43,19 +43,17 @@ impl Interpreter {
         return value;
     }
 
+    // TODO: Only integer supported for now...
     fn visit_binaryop(&mut self, node: Node) -> String {
 
-        let left = self.visit(node.children[0].clone());
-        let right = self.visit(node.children[1].clone());
+        let left_as_string = self.visit(node.children[0].clone());
+        let right_as_string = self.visit(node.children[1].clone());
 
-        let left_int: i32;
-        let right_int: i32;
-
-        match left.parse::<i32>() {
+        match left_as_string.parse::<i32>() {
             Ok(n) => left_int = n,
             Err(e) => panic!("Parse error: Could not convert {} to int. Error received while parsing: {}", left, e),
         }
-        match right.parse::<i32>() {
+        match right_as_string.parse::<i32>() {
             Ok(n) => right_int = n,
             Err(e) => panic!("Parse error: Could not convert {} to int. Error received while parsing: {}", right, e),
           }
@@ -81,6 +79,11 @@ impl Interpreter {
                 let val = node.children[0].nvalue.clone();
                 let val_int = val.parse::<i32>().unwrap();
                 return (-1 * val_int).to_string();
+            },
+            "FloatLiteral" => {
+                let val = node.children[0].nvalue.clone();
+                let val_float = val.parse::<f32>().unwrap();
+                return (-1.0 * val_float).to_string();
             },
             "Variable" | "UnaryOp" | "MultiplicationTerm" | "AdditiveExpression" => {
                 let val = self.visit(node.children[0].clone());
