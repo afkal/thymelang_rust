@@ -77,7 +77,7 @@ impl Interpreter {
         }
 
         match node.children[0].ntype.as_str() {
-            "NumericLiteral" => {
+            "IntegerLiteral" => {
                 let val = node.children[0].nvalue.clone();
                 let val_int = val.parse::<i32>().unwrap();
                 return (-1 * val_int).to_string();
@@ -108,7 +108,7 @@ impl Interpreter {
         match node.ntype.as_str() {
             "Program" => return self.visit_program(node),
             "PrintStatement" => return self.visit_print_statement(node),
-            "NumericLiteral" | "StringLiteral" => return node.nvalue,
+            "IntegerLiteral" | "FloatLiteral" | "StringLiteral" => return node.nvalue,
             "UnaryOp" => return self.visit_unaryop(node),
             "AdditiveExpression" | "MultiplicationTerm" => return self.visit_binaryop(node),
             "AssignmentStatement" => return self.visit_assignment_statement(node),

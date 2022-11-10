@@ -265,29 +265,41 @@ impl Parser {
     ///   ;
     ///
     fn literal(&mut self) -> Node {
-        if self.next_token.ttype == "NUMBER" {
-            return self.numeric_literal();
+        match self.next_token.ttype.as_str() {
+            "INT_NUMBER" | "FLOAT_NUMBER" => return self.numeric_literal(),
+            "STRING" => return self.string_literal(),
+            value => panic!("Error: unexpected literal: '{}', expected String or Number.", value),
         }
-        if self.next_token.ttype == "STRING" {
-            return self.string_literal();
-        }
-        panic!("Error: unexpected literal: '{}', expected String or Number.", self.next_token.tvalue);
     }
 
-    ///
     /// NumericLiteral
-    ///   : NUMBER
-    ///
+    ///   : IntegerLiteral
+    ///   | FloatLiteral
+    ///   ;
     fn numeric_literal(&mut self) -> Node {
-        let token = self.get_next_token();
-        self.eat_token("NUMBER");
-        /*
-        return Node {
-            ntype: String::from("NumericLiteral"),
-            nvalue: token.tvalue
+        match self.next_token.ttype.as_str() {
+            "INT_NUMBER" => return self.integer_literal(),
+            "FLOAT_NUMBER" => return self.float_literal(),
+            value => panic!("Error: unexpected number: '{}', expected int or float.", value),
         }
-        */
-        Node::new_without_children("NumericLiteral", &token.tvalue)
+    }
+
+    /// IntegerLiteral
+    ///   : INT_NUMBER
+    ///   ;
+    fn integer_literal(&mut self) -> Node {
+        let token = self.get_next_token();
+        self.eat_token("INT_NUMBER");
+        Node::new_without_children("IntegerLiteral", &token.tvalue)
+    }
+
+    /// IntegerLiteral
+    ///   : FLOAT_NUMBER
+    ///   ;
+    fn float_literal(&mut self) -> Node {
+        let token = self.get_next_token();
+        self.eat_token("FLOAT_NUMBER");
+        Node::new_without_children("FloatLiteral", &token.tvalue)
     }
 
     ///
@@ -311,7 +323,15 @@ mod tests {
     fn test_parse_single_integer() {
         let mut parser = Parser::new("153");
         let result = parser.parse();
-        let expected = Node::new_without_children("NumericLiteral", "153");
+        let expected = Node::new_without_children("IntegerLiteral", "153");
+        assert_eq!(expected, result.children[0]);
+    }
+
+    #[test]
+    fn test_parse_single_float() {
+        let mut parser = Parser::new("153.234");
+        let result = parser.parse();
+        let expected = Node::new_without_children("FloatLiteral", "153.234");
         assert_eq!(expected, result.children[0]);
     }
 

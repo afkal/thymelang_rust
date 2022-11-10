@@ -3,8 +3,8 @@ use regex::Regex;
 const REGEX_ARRAY: [(&str,&str);17] = [
     (r"\n", "EOL"), // Newline
     // Numbers
-    (r"^([0-9]*[.])?[0-9]+", "NUMBER"), // WILL BE FLOAT IN FUTURE?
-    (r"^\d+", "NUMBER"), // INT NEEDS TO BE AFTER FLOAT OR FLOAT WILL NOT KICK IN
+    (r"^[0-9]+\.[0-9]+", "FLOAT_NUMBER"), // eg. 123.4, needs to have decimal point and at least one decimal
+    (r"^\d+", "INT_NUMBER"), // INT NEEDS TO BE AFTER FLOAT OR FLOAT WILL NOT KICK IN
     // Operators
     (r"^\(", "LPAREN"), // LEFT PARENTHESIS "("
     (r"^\)", "RPAREN"), // RIGHT PARENTHESIS ")"
@@ -126,7 +126,7 @@ mod tests {
         let mut tokenizer = Tokenizer::new("153");
         let result = tokenizer.get_next_token();
         let expected = Token {
-            ttype: String::from("NUMBER"),
+            ttype: String::from("INT_NUMBER"),
             tvalue: String::from("153")
         };
         assert_eq!(expected, result);
@@ -136,7 +136,7 @@ mod tests {
         let mut tokenizer = Tokenizer::new("      153");
         let result = tokenizer.get_next_token();
         let expected = Token {
-            ttype: String::from("NUMBER"),
+            ttype: String::from("INT_NUMBER"),
             tvalue: String::from("153")
         };
         assert_eq!(expected, result);
@@ -147,7 +147,7 @@ mod tests {
         let mut tokenizer = Tokenizer::new("153.23423432");
         let result = tokenizer.get_next_token();
         let expected = Token {
-            ttype: String::from("NUMBER"),
+            ttype: String::from("FLOAT_NUMBER"),
             tvalue: String::from("153.23423432")
         };
         assert_eq!(expected, result);
@@ -158,7 +158,7 @@ mod tests {
         let mut tokenizer = Tokenizer::new("153.234.23432");
         let result = tokenizer.get_next_token();
         let nexpected = Token {
-            ttype: String::from("NUMBER"),
+            ttype: String::from("FLOAT_NUMBER"),
             tvalue: String::from("153.234")
         };
         assert_eq!(nexpected, result);
@@ -169,7 +169,7 @@ mod tests {
         let mut tokenizer = Tokenizer::new("15+3");
         let result = tokenizer.get_next_token();
         let expected = Token {
-            ttype: String::from("NUMBER"),
+            ttype: String::from("INT_NUMBER"),
             tvalue: String::from("15")
         };
         assert_eq!(expected, result);
