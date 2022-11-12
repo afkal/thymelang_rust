@@ -293,7 +293,7 @@ impl Parser {
         Node::new_without_children("IntegerLiteral", &token.tvalue)
     }
 
-    /// IntegerLiteral
+    /// FloatLiteral
     ///   : FLOAT_NUMBER
     ///   ;
     fn float_literal(&mut self) -> Node {
