@@ -9,19 +9,29 @@ Library contents
 - lexer.rs : Lexer that tokenazes input stream to tokens
 - parser.rs : Parser for creating Abstract Syntax Tree (AST) based on the parsed source
 - type_checker: Type Checker that walks AST  and checks for the type declarations and creates symbol tree based on the types identified
-- interpreter.rs : interpreter for AST (TBD)
+- interpreter.rs : Interpreter for AST (TBD)
 
 Language structure
 ------------------
 
 Thymelang operators and commands currently supported
 
+Binary operators:
 - '+' operator (PLUS)
 - '-' operator (MINUS)
 - '*' operator (MUL)
 - '/' operator (DIV)
+- '=' assign
 
-Example thymelang contents (can be found from thymelang/examples/sample.thm):
+Unary operators:
+- '+' positive
+- '-' negative
+
+Commands:
+
+- print(): echoes the contents of the value to the standard output
+
+Example thymelang contents (link to actual [file](/examples/sample.thm)):
 ```
 /* Sample script file to demonstrate Thymelang feature */
 
@@ -70,3 +80,8 @@ let main() = {
     }
 };
 ```
+
+Return values
+-------------
+
+Return value 0 for succesfull operation, and 1-255 represent faulty value.
