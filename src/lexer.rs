@@ -1,6 +1,6 @@
 use regex::Regex;
 
-const REGEX_ARRAY: [(&str,&str);17] = [
+const REGEX_ARRAY: [(&str,&str);19] = [
     (r"\n", "EOL"), // Newline
     // Numbers
     (r"^[0-9]+\.[0-9]+", "FLOAT_NUMBER"), // eg. 123.4, needs to have decimal point and at least one decimal
@@ -14,11 +14,13 @@ const REGEX_ARRAY: [(&str,&str);17] = [
     (r"^-", "MINUS"), // MINUS operator "-"
     (r"^==", "EQUAL"), // EQUALS operator "=="
     (r"^=", "ASSIGN"),  // ASSIGN operator "="
+    (r"^:", "COLON"), // COLON ":"
     (r"^;", "SEMICOLON"), // SEMICOLON ";"
     (r"^\{", "LCURLY"), // LEFT CURLY BRACKET "{"
     (r"^\}", "RCURLY"), // RIGHT CURLY BRACKET "}"
     // Reserved words
-    (r"^print", "PRINT"), // PRINT statement
+    (r"^print", "PRINT"), // PRINT command
+    (r"^let", "LET"), // LET command
     // String
     (r####"^"(.*?)""####, "STRING"), // STRING
     //(re(stringFilter), "STRING"),
@@ -228,6 +230,28 @@ mod tests {
         let expected = Token {
             ttype: String::from("IDENTIFIER"),
             tvalue: String::from("a")
+        };
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_keyword_print() {
+        let mut tokenizer = Tokenizer::new("print(1)");
+        let result = tokenizer.get_next_token();
+        let expected = Token {
+            ttype: String::from("PRINT"),
+            tvalue: String::from("print")
+        };
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_keyword_let() {
+        let mut tokenizer = Tokenizer::new("let a=1");
+        let result = tokenizer.get_next_token();
+        let expected = Token {
+            ttype: String::from("LET"),
+            tvalue: String::from("let")
         };
         assert_eq!(expected, result);
     }

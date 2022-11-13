@@ -50,3 +50,11 @@ fn test_assignment_statements() {
     run_interpreter_test("a=10; b=a+5", "15");
     run_interpreter_test("a=10; b=a+5; c=5*a - - b;", "65");
 }
+
+#[test]
+fn test_print_statements() {
+    run_interpreter_test("print(1)", "1");
+    run_interpreter_test("print(\"test\")", "\"test\"");
+    run_interpreter_test("a=10; b=a+5; print(a*b);", "150");
+    run_interpreter_test("print((1+2)*3);", "9");
+}

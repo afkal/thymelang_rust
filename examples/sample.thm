@@ -25,7 +25,7 @@ TestStruct = {
 // function definition
 let func = {
     a_int = a_int+1;
-    b_float = a_float*2;
+    b_float = a_float*2.0;
 };
 
 // function with arguments and return value

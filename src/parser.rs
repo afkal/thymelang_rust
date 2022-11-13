@@ -116,6 +116,7 @@ impl Parser {
     ///  Statement
     ///   : Assignment statement
     ///   | Print statement
+    ///   | Function definition
     ///   | Expression
     ///   ;
     fn statement(&mut self) -> Node {
@@ -124,8 +125,10 @@ impl Parser {
             return self.assignment_statement();
         } else if self.get_next_token().ttype == "PRINT" {
             return self.print_statement();
+        } else if self.get_next_token().ttype == "LET" {
+            return self.function_definition();
         }
-        // If nothing above - expect pure expressions (temporarely supported)
+        // If nothing above - expect pure expressions (temporarely supported for REPL use)
         return self.expression();
     }
 
@@ -154,6 +157,41 @@ impl Parser {
         let right = self.expression();
         let result = Node::new("AssignmentStatement", &oper.tvalue, Vec::from([left, right]));
         return result;
+    }
+
+    /// Function definition
+    ///   | LET identifier LPAREN RPAREN COLON block
+    ///   ;
+    /// (eg: let function(): { print(x); }  // TODO: Arguments and return values not yet supported
+    fn function_definition(&mut self) -> Node {
+        // TODO
+        println!("entering function definition...");
+        self.get_next_token();
+        self.eat_token("LET"); // Expect keyword LET
+        let name = self.get_next_token();
+        self.eat_token("IDENTIFIER"); // Expect IDENTIFIER
+        self.get_next_token();
+        self.eat_token("LPAREN"); // Expect LPAREN
+        // TODO: Function arguments needs to be added here
+        self.get_next_token();
+        self.eat_token("RPAREN"); // Expect RPAREN
+        self.get_next_token();
+        self.eat_token("COLON"); // Expect COLON
+        let child = self.block(); // Get statements from block
+        return Node::new("Function", &name.tvalue, Vec::from([child]));
+    }
+
+    /// Block
+    ///   | LCURLY Statementlist RCURLY
+    ///   ;
+    fn block(&mut self) -> Node {
+        println!("entering block");
+        self.get_next_token();
+        self.eat_token("LCURLY"); // Expect LCURLY
+        let node = self.expression(); // TODO: Replace by statementlist
+        println!("{}", node);
+        self.eat_token("RCURLY"); // Expect RCURLY
+        return node;
     }
 
     /// Expression
