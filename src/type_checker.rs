@@ -114,3 +114,37 @@ impl TypeChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use crate::type_checker::TypeChecker;
+    use crate::parser::Node;
+
+    #[test]
+    fn test_check_single_integer() {
+        let mut type_checker = TypeChecker::new();
+        let ast = Node::new_without_children("Integer", "153");
+        let result = type_checker.visit(&ast);
+        let expected = "Integer";
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_check_single_float() {
+        let mut type_checker = TypeChecker::new();
+        let ast = Node::new_without_children("Float", "153.232");
+        let result = type_checker.visit(&ast);
+        let expected = "Float";
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_check_single_string() {
+        let mut type_checker = TypeChecker::new();
+        let ast = Node::new_without_children("String", "\"testing\"");
+        let result = type_checker.visit(&ast);
+        let expected = "String";
+        assert_eq!(expected, result);
+    }
+}
