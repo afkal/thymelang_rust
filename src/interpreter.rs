@@ -14,6 +14,10 @@ impl Interpreter {
         }
     }
 
+    pub fn echo_global_memory(&self) {
+        println!("{:?}", self.global_memory);
+    }
+
     /// Interpret AST provided (by parser)
     pub fn interpret(&mut self, ast: Node) -> String {
         return self.visit(ast);
@@ -78,12 +82,12 @@ impl Interpreter {
         }
 
         match node.children[0].ntype.as_str() {
-            "IntegerLiteral" => {
+            "Integer" => {
                 let val = node.children[0].nvalue.clone();
                 let val_int = val.parse::<i32>().unwrap();
                 return (-1 * val_int).to_string();
             },
-            "FloatLiteral" => {
+            "Float" => {
                 let val = node.children[0].nvalue.clone();
                 let val_float = val.parse::<f32>().unwrap();
                 return (-1.0 * val_float).to_string();
@@ -114,7 +118,7 @@ impl Interpreter {
         match node.ntype.as_str() {
             "Program" => return self.visit_program(node),
             "PrintStatement" => return self.visit_print_statement(node),
-            "IntegerLiteral" | "FloatLiteral" | "StringLiteral" => return node.nvalue,
+            "Integer" | "Float" | "String" => return node.nvalue,
             "UnaryOp" => return self.visit_unaryop(node),
             "AdditiveExpression" | "MultiplicationTerm" => return self.visit_binaryop(node),
             "AssignmentStatement" => return self.visit_assignment_statement(node),

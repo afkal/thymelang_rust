@@ -37,10 +37,13 @@ fn main() {
     println!("Thymelang v0.10 (c) <proactor> 2022");
     println!("Type 'quit()' to Quit");
 
-    // Instantiate interpreter with symbol table.
+    // Instantiate interpreter with global memory.
     // Interpreter shall remain same during whole REPL session
     // Thus also symbol table remembers results between multiple inputs
     let mut interpreter = Interpreter::new();
+    // Same applies for type checker and symbol table generated
+    let mut type_checker = TypeChecker::new();
+
 
     // Start REPL loop
     loop {
@@ -67,11 +70,13 @@ fn main() {
             }
 
             // Run type checker for static type checking
-            let mut type_checker = TypeChecker::new();
             type_checker.evaluate(&ast);
+            println!("Symbol table:");
+            type_checker.echo_symbol_table(); // Debug output
 
             // Interpret AST provided by parser
             let result = interpreter.interpret(ast);
+            interpreter.echo_global_memory(); // Debug output
             // Print result
             println!(": {}", result);
         }
