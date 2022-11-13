@@ -147,4 +147,49 @@ mod tests {
         let expected = "String";
         assert_eq!(expected, result);
     }
+
+    #[test] // 1+2
+    fn test_check_binarynop_integer() {
+        let mut type_checker = TypeChecker::new();
+        // Creating node
+        let left = Node::new_without_children("Integer", "1");
+        let right = Node::new_without_children("Integer", "2");
+        let children = Vec::from([left, right]);
+        let ast = Node::new("AdditiveExpression", "+", children);
+       
+        let result = type_checker.visit(&ast);
+        let expected = "Integer";
+        assert_eq!(expected, result);
+    }
+
+    #[test] // 1.2+2.4
+    fn test_check_binarynop_float() {
+        let mut type_checker = TypeChecker::new();
+        // Creating node
+        let left = Node::new_without_children("Float", "1.2");
+        let right = Node::new_without_children("Float", "2.4");
+        let children = Vec::from([left, right]);
+        let ast = Node::new("AdditiveExpression", "+", children);
+       
+        let result = type_checker.visit(&ast);
+        let expected = "Float";
+        assert_eq!(expected, result);
+    }
+
+    #[test] // 1+2.4
+    #[should_panic(expected = "Type Error: left and/or right of wrong type. Left Integer, right Float")]
+    fn test_check_binarynop_unmatching_types() {
+        let mut type_checker = TypeChecker::new();
+        // Creating node
+        let left = Node::new_without_children("Integer", "1");
+        let right = Node::new_without_children("Float", "2.4");
+        let children = Vec::from([left, right]);
+        let ast = Node::new("AdditiveExpression", "+", children);
+       
+        let result = type_checker.visit(&ast);
+        let expected = "Float";
+        assert_eq!(expected, result);
+    }
+
+
 }
