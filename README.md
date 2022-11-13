@@ -19,22 +19,28 @@ Thyme lang is aimed to provide an easy syntax, compilable alternative for script
 Language structure
 ------------------
 
-Thymelang operators and commands currently supported
+Operators and commands currently supported
 
-Binary operators:
-- '+' operator (PLUS)
-- '-' operator (MINUS)
-- '*' operator (MUL)
-- '/' operator (DIV)
-- '=' assign
+Operators:
+| Operator | Example | Description |
+|  :----:  |  :----: |-------------|
+| Binary operators |
+| +        | 1+2     | Addition: term + term |
+| -        | 1-2     | Substraction: term - term |
+| *        | 1*2     | Multiplication:  factor * factor |
+| /        | 1/2     | Integer division:  factor / factor |
+| =        | a=1     | Assign operator: varible = expression |
+| Unary Operators |
+| +        | +2     | Positive: +factor |
+| -        | -2     | Negatice: -factor |
 
-Unary operators:
-- '+' positive
-- '-' negative
 
 Commands:
+| Operator | Example | Description |
+|  :----:  |  :----: |-------------|
+| print()  | print(1);</br>print("something");</br>print(variableA);  | Echoes the contents of the value to the standard output |
 
-- print(): echoes the contents of the value to the standard output
+
 
 Example thymelang contents (link to actual [file](/examples/sample.thm)):
 ```
