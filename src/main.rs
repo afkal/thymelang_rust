@@ -7,8 +7,10 @@
 //use std::env;
 use clap::Parser as Clap;
 use std::io::{self, Write};
+// Thymelang modules
 pub use thymelang::lexer::Tokenizer;
 pub use thymelang::parser::Parser;
+pub use thymelang::type_checker::TypeChecker;
 pub use thymelang::interpreter::Interpreter;
 
 /// Thymelang interpreter
@@ -63,7 +65,11 @@ fn main() {
                 println!("AST generated:");
                 println!("{:?}",ast); // Parser debug output
             }
-            
+
+            // Run type checker for static type checking
+            let mut type_checker = TypeChecker::new();
+            type_checker.evaluate(&ast);
+
             // Interpret AST provided by parser
             let result = interpreter.interpret(ast);
             // Print result
