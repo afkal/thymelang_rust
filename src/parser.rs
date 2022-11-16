@@ -141,7 +141,7 @@ impl Parser {
         let _node = self.get_next_token();
         self.eat_token("LPAREN"); // Expect LPAREN
         let child = self.expression(); // Get expression from right
-        let _node = self.get_next_token();
+        //let _node = self.get_next_token();
         self.eat_token("RPAREN"); // Expect RPAREN
         return Node::new("PrintStatement", &command.tvalue, Vec::from([child]));
     }
@@ -166,9 +166,9 @@ impl Parser {
     fn function_definition(&mut self) -> Node {
         // TODO
         println!("entering function definition...");
-        self.get_next_token();
+        //self.get_next_token();
         self.eat_token("LET"); // Expect keyword LET
-        let name = self.get_next_token();
+        let function_name = self.get_next_token();
         self.eat_token("IDENTIFIER"); // Expect IDENTIFIER
         self.get_next_token();
         self.eat_token("LPAREN"); // Expect LPAREN
@@ -177,8 +177,8 @@ impl Parser {
         self.eat_token("RPAREN"); // Expect RPAREN
         self.get_next_token();
         self.eat_token("COLON"); // Expect COLON
-        let child = self.block(); // Get statements from block
-        return Node::new("Function", &name.tvalue, Vec::from([child]));
+        let block = self.block(); // Get statements from block
+        return Node::new("Function", &function_name.tvalue, Vec::from([block]));
     }
 
     /// Block
@@ -188,7 +188,7 @@ impl Parser {
         println!("entering block");
         self.get_next_token();
         self.eat_token("LCURLY"); // Expect LCURLY
-        let node = self.expression(); // TODO: Replace by statementlist
+        let node = self.expression(); // TODO: Replace by statementlist and return Block
         println!("{}", node);
         self.eat_token("RCURLY"); // Expect RCURLY
         return node;
