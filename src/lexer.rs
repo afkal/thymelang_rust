@@ -1,6 +1,6 @@
 use regex::Regex;
 
-const REGEX_ARRAY: [(&str,&str);19] = [
+const REGEX_ARRAY: [(&str,&str);20] = [
     (r"\n", "EOL"), // Newline
     // Numbers
     (r"^[0-9]+\.[0-9]+", "FLOAT_NUMBER"), // eg. 123.4, needs to have decimal point and at least one decimal
@@ -20,6 +20,7 @@ const REGEX_ARRAY: [(&str,&str);19] = [
     (r"^\}", "RCURLY"), // RIGHT CURLY BRACKET "}"
     // Reserved words
     (r"^print", "PRINT"), // PRINT command
+    (r"^fn", "FN"), // FN command
     (r"^let", "LET"), // LET command
     // String
     (r####"^"(.*?)""####, "STRING"), // STRING

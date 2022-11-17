@@ -125,7 +125,8 @@ impl Parser {
             return self.assignment_statement();
         } else if self.get_next_token().ttype == "PRINT" {
             return self.print_statement();
-        } else if self.get_next_token().ttype == "LET" {
+        // Function definition
+        } else if self.get_next_token().ttype == "FN" {
             return self.function_definition();
         }
         // If nothing above - expect pure expressions (temporarely supported for REPL use)
@@ -160,23 +161,21 @@ impl Parser {
     }
 
     /// Function definition
-    ///   | LET identifier LPAREN RPAREN COLON block
+    ///   | FN identifier LPAREN RPAREN block
+    ///   | LET identifier LPAREN RPAREN [COLON identifier EQUALS] block // Closure style, not supported yet!
     ///   ;
+    /// (eg. fn function() { print(x); })
     /// (eg: let function(): { print(x); }  // TODO: Arguments and return values not yet supported
     fn function_definition(&mut self) -> Node {
         // TODO
         println!("entering function definition...");
         //self.get_next_token();
-        self.eat_token("LET"); // Expect keyword LET
+        self.eat_token("FN"); // Expect keyword LET
         let function_name = self.get_next_token();
         self.eat_token("IDENTIFIER"); // Expect IDENTIFIER
-        self.get_next_token();
         self.eat_token("LPAREN"); // Expect LPAREN
         // TODO: Function arguments needs to be added here
-        self.get_next_token();
         self.eat_token("RPAREN"); // Expect RPAREN
-        self.get_next_token();
-        self.eat_token("COLON"); // Expect COLON
         let block = self.block(); // Get statements from block
         return Node::new("Function", &function_name.tvalue, Vec::from([block]));
     }
