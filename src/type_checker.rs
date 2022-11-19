@@ -12,9 +12,12 @@ use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Symbol {
-    sname: String,
-    stype: String,
-    scat: String,
+    sname: String, // Symbol name = Identifier or function name
+    stype: String, // Symbol type = Identifier type or function return type
+    scat: String, // Symbol category = Variable, Function
+    //sparams: String, // Symbol parameters = Function parameters (TBD)
+    scope_name: String, // Symbol scope name
+    scope_level: i32, // Symbol scope level
 }
 
 impl Symbol {
@@ -24,6 +27,8 @@ impl Symbol {
             sname: String::from(symbol_name),
             stype: String::from(symbol_type),
             scat: String::from(symbol_category),
+            scope_name: String::from("global"),
+            scope_level: 1,
         }
     }
 }
@@ -82,8 +87,17 @@ impl TypeChecker {
         return self.visit(&node.children[0]);
     }
 
+    // Add function definition to symbol table
+    fn visit_function_definition(&mut self, node: &Node) -> String {
+        
+        let symbol = Symbol::new(&node.nvalue, "None", "Function");
+        self.symbol_table.insert(node.nvalue.clone(), symbol);
+        return "None".to_string(); // Function with no return value
+    }
+
     /* Statements */
 
+    // Add variable to symbol table 
     fn visit_assignment_statement(&mut self, node: &Node) -> String {
         // Store value from the expression to variable
         let variable_name = node.children[0].nvalue.clone();
@@ -128,10 +142,11 @@ impl TypeChecker {
             //"Program" => return self.visit_program(node),
             "PrintStatement" => return self.visit_print_statement(node),
             "AssignmentStatement" => return self.visit_assignment_statement(node),
-            "Integer" | "Float" | "String" => return node.ntype.clone(), // Return literal type
-            "UnaryOp" => return self.visit_unaryop(node),
+            "FunctionDefinition" => return self.visit_function_definition(node),
             "AdditiveExpression" | "MultiplicationTerm" => return self.visit_binaryop(node),
+            "UnaryOp" => return self.visit_unaryop(node),
             "Variable" => return self.visit_variable(node),
+            "Integer" | "Float" | "String" => return node.ntype.clone(), // Return literal type
             ntype => return format!("Thyme Error: Could not run type check. Unknown type: \"{}\"", ntype),
         }
     }

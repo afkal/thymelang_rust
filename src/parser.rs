@@ -161,13 +161,12 @@ impl Parser {
     }
 
     /// Function definition
-    ///   | FN identifier LPAREN RPAREN block
+    ///   | FN identifier LPAREN parameter_list RPAREN block
     ///   | LET identifier LPAREN RPAREN [COLON identifier EQUALS] block // Closure style, not supported yet!
     ///   ;
-    /// (eg. fn function() { print(x); })
+    /// (eg. fn function(a:int, b:int) { print(x); })
     /// (eg: let function(): { print(x); }  // TODO: Arguments and return values not yet supported
     fn function_definition(&mut self) -> Node {
-        // TODO
         println!("entering function definition...");
         //self.get_next_token();
         self.eat_token("FN"); // Expect keyword LET
@@ -177,8 +176,16 @@ impl Parser {
         // TODO: Function arguments needs to be added here
         self.eat_token("RPAREN"); // Expect RPAREN
         let block = self.block(); // Get statements from block
-        return Node::new("Function", &function_name.tvalue, Vec::from([block]));
+        return Node::new("FunctionDefinition", &function_name.tvalue, Vec::from([block]));
     }
+
+    /* TODO: Will implement parameter list for functions
+    /// Parameter List
+    ///   | parameter COLON parameter_type
+    ///   ;
+    fn parameter_list(&mut self) -> Node {
+    }
+    */
 
     /// Block
     ///   | LCURLY Statementlist RCURLY
