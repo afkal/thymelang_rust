@@ -94,7 +94,13 @@ impl TypeChecker {
         let symbol = Symbol::new(&variable_name, &variable_type, "Variable");
 
         // Add variable to symbol table with value derived from the value
-        // self.symbol_table.insert(variable, ntype);
+        // Check that the variable is not yet present with some other type (Type Change not allowed)
+        if self.symbol_table.contains_key(&variable_name) {
+            let result = self.symbol_table.get(&variable_name).unwrap();
+            if result.stype != variable_type {
+                panic!("Type Error: Implicit type conversion not allowed for variable \"{}\". Type was {} and new type introduced is {}", variable_name, result.stype, variable_type);
+            }
+        }
         self.symbol_table.insert(variable_name, symbol);
         return node.ntype.clone();
     }
