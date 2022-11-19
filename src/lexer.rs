@@ -257,4 +257,15 @@ mod tests {
         assert_eq!(expected, result);
     }
 
+    #[test]
+    fn test_keyword_fn() {
+        let mut tokenizer = Tokenizer::new("fn test() {1+2}");
+        let result = tokenizer.get_next_token();
+        let expected = Token {
+            ttype: String::from("FN"),
+            tvalue: String::from("fn")
+        };
+        assert_eq!(expected, result);
+    }
+
 }

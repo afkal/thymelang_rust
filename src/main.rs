@@ -72,7 +72,8 @@ fn main() {
             // Run type checker for static type checking
             type_checker.evaluate(&ast);
             println!("Symbol table:");
-            type_checker.echo_symbol_table(); // Debug output
+            let stable = type_checker.get_symbol_table(); // Debug output
+            println!("{:?}",stable); // Type Chekcer debug output
 
             // Interpret AST provided by parser
             let result = interpreter.interpret(ast);

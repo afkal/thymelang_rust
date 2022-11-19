@@ -9,16 +9,28 @@
 
 use crate::parser::Node;
 use std::collections::HashMap;
-/*
+
 #[derive(Debug)]
 pub struct Symbol {
-    symbol_name: String,
-    symbol_type: String
+    sname: String,
+    stype: String,
+    scat: String,
 }
-*/
+
+impl Symbol {
+
+    pub fn new(symbol_name: &str, symbol_type: &str, symbol_category: &str) -> Self {
+        Self {
+            sname: String::from(symbol_name),
+            stype: String::from(symbol_type),
+            scat: String::from(symbol_category),
+        }
+    }
+}
+
 
 pub struct TypeChecker {
-    symbol_table: HashMap<String, String> // Global memory for variables and other structrures
+    symbol_table: HashMap<String, Symbol> // Global memory for variables and other structrures
 }
 
 impl TypeChecker {
@@ -29,8 +41,8 @@ impl TypeChecker {
         }
     }
 
-    pub fn echo_symbol_table(&self) {
-        println!("{:?}", self.symbol_table);
+    pub fn get_symbol_table(&self) -> &HashMap<String, Symbol> {
+        return &self.symbol_table;
     }
 
     /// Type check AST provided (by parser)
@@ -42,8 +54,8 @@ impl TypeChecker {
     fn visit_variable(&mut self, node: &Node) -> String {
         let result = self.symbol_table.get(&node.nvalue);
         match result {
-            None => panic!("Type Error: Variable accessed before instatiotion: \"{}\".", node.nvalue),
-            Some(var) => var.to_string(),
+            None => panic!("Type Error: Variable accessed before instatiation: \"{}\".", node.nvalue),
+            Some(symbol) => symbol.stype.clone(),
         }
         //return String::from("2");
     }
@@ -74,12 +86,16 @@ impl TypeChecker {
 
     fn visit_assignment_statement(&mut self, node: &Node) -> String {
         // Store value from the expression to variable
-        let variable = node.children[0].nvalue.clone();
-        let ntype = self.visit(&node.children[1]);
+        let variable_name = node.children[0].nvalue.clone();
+        let variable_type = self.visit(&node.children[1]);
 
-        println!("variable: {:?}, type: {:?}", variable, ntype);
+        //println!("variable: {:?}, type: {:?}", variable, ntype);
+        // Create new symbol
+        let symbol = Symbol::new(&variable_name, &variable_type, "Variable");
+
         // Add variable to symbol table with value derived from the value
-        self.symbol_table.insert(variable, ntype);
+        // self.symbol_table.insert(variable, ntype);
+        self.symbol_table.insert(variable_name, symbol);
         return node.ntype.clone();
     }
 
