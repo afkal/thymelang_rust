@@ -87,7 +87,15 @@ impl TypeChecker {
         return self.visit(&node.children[0]);
     }
 
-    // Add function definition to symbol table
+
+    // TODO: Symbol table scope should change while entering function definition or rather the block
+    // with curly brackets {}. This could be done with eg. Type Checker Struct variable current_scope", that
+    // is updated based on the scope currently active and Scope specific symbol table instances.
+    //
+    // Definitions should then be searched with reqursive manner starting from the closest scope and then going
+    // Through all the parent scopes recursively. The idea is descriped in:
+    // https://ruslanspivak.com/lsbasi-part14/
+    /// Visits function definition and as the definition to symbol table
     fn visit_function_definition(&mut self, node: &Node) -> String {
         
         let symbol = Symbol::new(&node.nvalue, "None", "Function");

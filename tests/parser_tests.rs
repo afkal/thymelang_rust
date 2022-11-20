@@ -2,6 +2,14 @@ use thymelang::parser;
 use thymelang::parser::Node;
 
 #[test]
+fn test_single_integer() {
+    let mut prs = parser::Parser::new("1");
+    let result = &prs.parse().children[0];
+    let expected = Node::new_without_children("Integer", "1");
+    assert_eq!(&expected, result);
+}
+
+#[test]
 fn test_additive_expression() {
     let mut prs = parser::Parser::new("1+2");
     let result = &prs.parse().children[0];
@@ -66,4 +74,12 @@ fn test_unary_operator() {
     let result_json = serde_json::to_string(&result).unwrap();
     let expexted = "{\"ntype\":\"AdditiveExpression\",\"nvalue\":\"+\",\"children\":[{\"ntype\":\"Integer\",\"nvalue\":\"1\",\"children\":[]},{\"ntype\":\"UnaryOp\",\"nvalue\":\"-\",\"children\":[{\"ntype\":\"Integer\",\"nvalue\":\"2\",\"children\":[]}]}]}";
     assert_eq!(expexted, result_json);
+}
+
+#[test]
+fn test_simple_inline_comment() {
+    let mut prs = parser::Parser::new("1; // comment");
+    let result = &prs.parse().children[0];
+    let expected = Node::new_without_children("Integer", "1");
+    assert_eq!(&expected, result);
 }

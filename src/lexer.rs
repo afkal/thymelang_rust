@@ -1,7 +1,10 @@
 use regex::Regex;
 
-const REGEX_ARRAY: [(&str,&str);20] = [
+const REGEX_ARRAY: [(&str,&str);22] = [
+    // Spaces
     (r"\n", "EOL"), // Newline
+    // Comments 
+    (r"^//.*", "COMMENT"), // Single line comment
     // Numbers
     (r"^[0-9]+\.[0-9]+", "FLOAT_NUMBER"), // eg. 123.4, needs to have decimal point and at least one decimal
     (r"^\d+", "INT_NUMBER"), // INT NEEDS TO BE AFTER FLOAT OR FLOAT WILL NOT KICK IN
@@ -19,9 +22,10 @@ const REGEX_ARRAY: [(&str,&str);20] = [
     (r"^\{", "LCURLY"), // LEFT CURLY BRACKET "{"
     (r"^\}", "RCURLY"), // RIGHT CURLY BRACKET "}"
     // Reserved words
-    (r"^print", "PRINT"), // PRINT command
     (r"^fn", "FN"), // FN command
+    (r"^fn", "IF"), // IF command
     (r"^let", "LET"), // LET command
+    (r"^print", "PRINT"), // PRINT command
     // String
     (r####"^"(.*?)""####, "STRING"), // STRING
     //(re(stringFilter), "STRING"),

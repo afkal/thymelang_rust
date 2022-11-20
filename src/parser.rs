@@ -73,13 +73,17 @@ impl Parser {
     ///
     fn eat_token(&mut self, token_type : &str) {
 
-        //let current_token = self.next_token.clone(); // Clone next token to current local token
-        if self.next_token.ttype == "".to_string() || self.next_token.ttype != token_type {
+       if self.next_token.ttype == "".to_string() || self.next_token.ttype != token_type {
             panic!("Expected token type: {}",token_type)
         }
 
         self.next_token = self.tokenizer.get_next_token(); // Advance lookahed to next token
-        //current_token // And return current token if there was a match
+
+        // Filter COMMENTS
+        while self.next_token.ttype == "COMMENT" {
+            self.next_token = self.tokenizer.get_next_token();
+        }
+
     }
 
     ///
