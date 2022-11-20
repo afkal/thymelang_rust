@@ -1,0 +1,12 @@
+// Title comment
+// Other comment line
+
+/* Let's test also multiline
+ * comment to see how it works
+ */
+ 
+a=2; // Line comment
+b=5;
+
+// Print should also work
+print(a*b); // -> 10

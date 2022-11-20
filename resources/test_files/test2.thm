@@ -1,0 +1,12 @@
+// Thymelang sample script for Test2 (2022-11-20)
+
+a = 1;   // This should be interpeted to variable a, with value 1 and type Integer
+b = 1.0; // This should be interpeted to variable b, with value 1.0 and type Float
+// Print function
+print(a+1);
+// Function definition without arguments and return value:
+fn my_func() {
+    a = a + 1;
+    print("printing from inside custom function");
+
+}

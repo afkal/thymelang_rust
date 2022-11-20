@@ -40,7 +40,7 @@ fn execute(source: String, mut interpreter: Interpreter, mut type_checker: TypeC
 
     if debug_mode {
         println!("AST generated:");
-        println!("{:?}",ast); // Parser debug output
+        println!("{:#?}",ast); // Parser debug output
     }
 
     // Run type checker for static type checking
