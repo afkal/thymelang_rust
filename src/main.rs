@@ -79,7 +79,7 @@ fn main() {
     // Handle case when file path provided
     match args.path {
         Some(file_path) => {
-            println!("Path \"{}\" provided. Running script from file still in experimental mode.", file_path.display());
+            println!("Executing file: \"{}\"", file_path.display());
             let source = fs::read_to_string(file_path)
                 .expect("Thyme Error: Input file not found!");
 

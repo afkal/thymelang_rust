@@ -1,10 +1,11 @@
 use regex::Regex;
 
-const REGEX_ARRAY: [(&str,&str);22] = [
+const REGEX_ARRAY: [(&str,&str);23] = [
     // Spaces
     (r"^\n", "EOL"), // Newline
     // Comments 
-    (r"^//.*", "COMMENT"), // Single line comment
+    (r"^//.*", "COMMENT"), // Single line comment, needs to be before multiline comment
+    (r"^/\*(.|[\r\n])*?\*/", "COMMENT"), // Multi line comment
     // Numbers
     (r"^[0-9]+\.[0-9]+", "FLOAT_NUMBER"), // eg. 123.4, needs to have decimal point and at least one decimal
     (r"^\d+", "INT_NUMBER"), // INT NEEDS TO BE AFTER FLOAT OR FLOAT WILL NOT KICK IN
@@ -74,7 +75,7 @@ impl Tokenizer {
         }
 
         // Consume spaces
-        if self.source.chars().nth(self.position).unwrap()==' ' {
+        while self.source.chars().nth(self.position).unwrap()==' ' {
             self.position += 1;
             if self.position >= self.source.chars().count().try_into().unwrap() {
                 return Token::new("EOF", "EOF");
