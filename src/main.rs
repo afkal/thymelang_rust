@@ -53,9 +53,13 @@ fn execute(source: String, mut interpreter: Interpreter, mut type_checker: TypeC
 
     // Interpret AST provided by parser
     let result = interpreter.interpret(ast);
+    /*
     if debug_mode {
         interpreter.echo_global_memory(); // Debug output
     }
+    */
+    // Temporarily always print contents of the global memory
+    interpreter.echo_global_memory(); // Debug output
 
     // Print result
     println!(": {}", result);
@@ -92,25 +96,27 @@ fn main() {
  
     // If not file provided start REPL loop
     loop {
-        let mut input = String::new();
+        let mut source = String::new();
         print!("{}","thyme> ");
         io::stdout().flush().unwrap();
         io::stdin()
-            .read_line(&mut input)
+            .read_line(&mut source)
             .expect("Failed to read input");
-        if input == "quit()\n" {
+        if source == "quit()\n" {
             break; // Press 'q' to quit'
         } else {
 
+            //execute(source, &interpreter, &type_checker, args.debug);
+            
             // Tokenize source code
             if args.debug {
                 println!("Tokenizer output:");
-                let mut tokenizer = Tokenizer::new(&input); // instantiate new lexer from source
+                let mut tokenizer = Tokenizer::new(&source); // instantiate new lexer from source
                 tokenizer.print_all_tokens(); // Tokenizer debug output
             }
 
             // Create Asymmetric Symbol Tree from input source
-            let mut parser = Parser::new(&input);
+            let mut parser = Parser::new(&source);
             let ast = parser.parse();
 
             if args.debug {
@@ -129,6 +135,7 @@ fn main() {
             interpreter.echo_global_memory(); // Debug output
             // Print result
             println!(": {}", result);
+            
         }
     }
 }

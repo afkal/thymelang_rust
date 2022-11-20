@@ -77,12 +77,6 @@ impl Parser {
     /// Consume current token and get next token from input stream
     ///
     fn eat_token(&mut self, token_type : &str) {
-        /*
-        // Filter COMMENT and EOL tokens
-        while self.next_token.ttype == "COMMENT" || self.next_token.ttype == "EOL" {
-            self.next_token = self.tokenizer.get_next_token();
-        }
-        */
 
        if self.next_token.ttype == "".to_string() || self.next_token.ttype != token_type {
             panic!("Expected token type: {}",token_type)
@@ -109,6 +103,18 @@ impl Parser {
         return Node::new("Program", "Root", children);
     }
 
+    /// Block
+    ///   | LCURLY Statementlist RCURLY
+    ///   ;
+    fn block(&mut self) -> Node {
+        println!("entering block");
+        self.get_next_token();
+        self.eat_token("LCURLY"); // Expect LCURLY
+        let children = self.statementlist(); // TODO: Replace by statementlist and return Block
+        self.eat_token("RCURLY"); // Expect RCURLY
+        return Node::new("Block", "Block", children);
+    }
+
     /// Statementlist, list of statements divided by semicolons
     /// Statementlist
     ///   : Statement SEMICOLON Statementlist
@@ -120,8 +126,8 @@ impl Parser {
         // Loop while SEMICOLON(s) found at the end of statement
         while self.get_next_token().ttype == "SEMICOLON" {
             self.eat_token("SEMICOLON");
-            // Add new statement to the list in case no end-of-file was reached
-            if self.get_next_token().ttype != "EOF" {
+            // Add new statement to the list in case no end-of-file or block closing right curly was reached
+            if self.get_next_token().ttype != "EOF" && self.get_next_token().ttype != "RCURLY" {
                 statements.push(self.statement());
             }
         }
@@ -132,7 +138,6 @@ impl Parser {
     ///   : Assignment statement
     ///   | Print statement
     ///   | Function definition
-    ///   | Expression
     ///   ;
     fn statement(&mut self) -> Node {
         // Assignment statement starts with Identifier (Variable name)
@@ -143,9 +148,12 @@ impl Parser {
         // Function definition
         } else if self.get_next_token().ttype == "FN" {
             return self.function_definition();
+        } else {
+            panic!("Thyme Error: Invalid token for Statement with value \"{}\" of type \"{}\"", self.get_next_token().tvalue, self.get_next_token().ttype)
         }
         // If nothing above - expect pure expressions (temporarely supported for REPL use)
-        return self.expression();
+        // Note: Removed, now use eg. assignment or print statement instead
+        // return self.expression();
     }
 
     /// PrintStatement
@@ -201,19 +209,6 @@ impl Parser {
     fn parameter_list(&mut self) -> Node {
     }
     */
-
-    /// Block
-    ///   | LCURLY Statementlist RCURLY
-    ///   ;
-    fn block(&mut self) -> Node {
-        println!("entering block");
-        self.get_next_token();
-        self.eat_token("LCURLY"); // Expect LCURLY
-        let node = self.expression(); // TODO: Replace by statementlist and return Block
-        println!("{}", node);
-        self.eat_token("RCURLY"); // Expect RCURLY
-        return node;
-    }
 
     /// Expression
     ///   : Term ((PLUS | MINUS) Term)*
@@ -379,27 +374,40 @@ mod tests {
     use crate::parser::Node;
 
     #[test]
-    fn test_parse_single_integer() {
+    fn test_parse_single_integer_literal() {
         let mut parser = Parser::new("153");
-        let result = parser.parse();
+        parser.next_token = parser.tokenizer.get_next_token();
+        let result = parser.literal();
         let expected = Node::new_without_children("Integer", "153");
-        assert_eq!(expected, result.children[0]);
+        assert_eq!(expected, result);
     }
 
     #[test]
-    fn test_parse_single_float() {
+    fn test_parse_single_float_literal() {
         let mut parser = Parser::new("153.234");
-        let result = parser.parse();
+        parser.next_token = parser.tokenizer.get_next_token();
+        let result = parser.literal();
         let expected = Node::new_without_children("Float", "153.234");
-        assert_eq!(expected, result.children[0]);
+        assert_eq!(expected, result);
     }
 
     #[test]
-    fn test_parse_single_string() {
+    #[should_panic]
+    fn test_parse_invalid_float_literal_should_fail() {
+        let mut parser = Parser::new("153.234.3");
+        parser.next_token = parser.tokenizer.get_next_token();
+        let result = parser.literal();
+        let expected = Node::new_without_children("Float", "153.234.3");
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_parse_single_string_literal() {
         let mut parser = Parser::new("\"Testing\"");
-        let result = parser.parse();
+        parser.next_token = parser.tokenizer.get_next_token();
+        let result = parser.literal();
         let expected = Node::new_without_children("String", "\"Testing\"");
-        assert_eq!(expected, result.children[0]);
+        assert_eq!(expected, result);
     }
 
     /* Single identifier not currently supported by parser */

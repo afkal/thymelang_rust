@@ -32,8 +32,8 @@ impl Interpreter {
         //return String::from("2");
     }
 
+    // Store value from the expression to variable
     fn visit_assignment_statement(&mut self, node: Node) -> String {
-        // Store value from the expression to variable
         let variable = node.children[0].nvalue.clone();
         let value = self.visit(node.children[1].clone());
         self.global_memory.insert(variable, value.clone());
@@ -101,6 +101,13 @@ impl Interpreter {
         }
     }
 
+    // Currently support only functions with no return value
+    fn visit_function_definition(&mut self, node: Node) -> String {
+        let name = node.nvalue.clone();
+        self.global_memory.insert(name, String::from("None"));
+        return String::from("None");
+    }
+
     /// Visit all children of Program Root node
     fn visit_program(&mut self, node: Node) -> String {
 
@@ -117,11 +124,12 @@ impl Interpreter {
 
         match node.ntype.as_str() {
             "Program" => return self.visit_program(node),
+            "FunctionDefinition" => return self.visit_function_definition(node),
             "PrintStatement" => return self.visit_print_statement(node),
-            "Integer" | "Float" | "String" => return node.nvalue,
+            "AssignmentStatement" => return self.visit_assignment_statement(node),
             "UnaryOp" => return self.visit_unaryop(node),
             "AdditiveExpression" | "MultiplicationTerm" => return self.visit_binaryop(node),
-            "AssignmentStatement" => return self.visit_assignment_statement(node),
+            "Integer" | "Float" | "String" => return node.nvalue,
             "Variable" => return self.visit_variable(node),
             ntype => return format!("Thyme Error: Could not interpret. Unknown type: \"{}\"", ntype),
         }

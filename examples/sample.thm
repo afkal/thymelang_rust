@@ -1,8 +1,9 @@
 /* Sample script file to demonstrate Thymelang feature */
 
-// Comments may be either
-/* blocks, or: */ 
-// single line comments 
+/* Comments may be either
+multiline, or:
+*/ 
+// single line 
 
 // Thyme is static strong typed language
 // Variable definition: let VAR = VALUE SEMICOLON

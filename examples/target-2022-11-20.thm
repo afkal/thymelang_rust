@@ -8,10 +8,11 @@ b = 1.0; // This should be interpeted to variable b, with value 1.0 and type Flo
 // 4. Be able to parse and interpret global standard functions as in:
 print(a+1);
 // 5. Be able to parse custom functions without arguments and return value as in:
-//fn my_func() {
-    //print("printing from inside custom function");
-//    a+1;
-//}
+fn my_func() {
+    a = a + 1;
+    print("printing from inside custom function"); // Currently fails if last statement has ending semicolon
+
+}
 // Strech goals
 // 6. Be able to parse and interpret call for custom function as in:
 //my_func(); // -> "printing from inside custom function"
