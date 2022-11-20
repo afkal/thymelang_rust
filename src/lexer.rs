@@ -2,7 +2,7 @@ use regex::Regex;
 
 const REGEX_ARRAY: [(&str,&str);22] = [
     // Spaces
-    (r"\n", "EOL"), // Newline
+    (r"^\n", "EOL"), // Newline
     // Comments 
     (r"^//.*", "COMMENT"), // Single line comment
     // Numbers

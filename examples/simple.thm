@@ -1,1 +1,8 @@
-a=1;
+// Title comment
+// Other comment line
+
+a=2; // Line comment
+b=5;
+
+// Print should also work
+print(a*b); // -> 10

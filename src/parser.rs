@@ -61,7 +61,12 @@ impl Parser {
 
         // Lookahead is a next token used for predictive parsing (LL1 parser)
         self.next_token = self.tokenizer.get_next_token();
-        
+
+        // Filter COMMENT and EOL tokens at the beginning of file
+        while self.next_token.ttype == "COMMENT" || self.next_token.ttype == "EOL" {
+            self.next_token = self.tokenizer.get_next_token();
+        }        
+
         //println!("Parsing token: ({}, {})", self.next_token.ttype, self.next_token.tvalue);
 
         // Parse recursively
@@ -72,6 +77,12 @@ impl Parser {
     /// Consume current token and get next token from input stream
     ///
     fn eat_token(&mut self, token_type : &str) {
+        /*
+        // Filter COMMENT and EOL tokens
+        while self.next_token.ttype == "COMMENT" || self.next_token.ttype == "EOL" {
+            self.next_token = self.tokenizer.get_next_token();
+        }
+        */
 
        if self.next_token.ttype == "".to_string() || self.next_token.ttype != token_type {
             panic!("Expected token type: {}",token_type)
@@ -79,8 +90,8 @@ impl Parser {
 
         self.next_token = self.tokenizer.get_next_token(); // Advance lookahed to next token
 
-        // Filter COMMENTS
-        while self.next_token.ttype == "COMMENT" {
+        // Filter COMMENT and EOL tokens
+        while self.next_token.ttype == "COMMENT" || self.next_token.ttype == "EOL" {
             self.next_token = self.tokenizer.get_next_token();
         }
 
